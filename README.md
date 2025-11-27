@@ -36,6 +36,10 @@ Karena basis kita hanya HTML, cukup extract, mulai dari index.html
 dan semua fitur akan berjalan sekhalayaknya.
 
 Saran Kami : Explore semua page yang ada, karena banyak hal menarik.
+Jika pada mode mobile ada page yang tidak bisa terscroll berikut 2 bagian tersebut :
+
+- https://web-design-daun-basil-technoversary.vercel.app/naturelearn.html
+- https://web-design-daun-basil-technoversary.vercel.app/lautlearn.html
 
 Jika ada pertanyaan mengenai cara instalasi/run bisa hubungi:
 085708989602
