@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact — Nature Intuition</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Poppins", sans-serif;
+        color: white;
+        background: #000;
+        overflow-x: hidden;
+      }
+
+      /* NAVBAR */
+      .navbar {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        padding: 1.8rem 7%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000;
+        transition: all 0.4s ease;
+      }
+      .navbar.scrolled {
+        background: rgba(255, 255, 255, 0.97);
+        backdrop-filter: blur(12px);
+        padding: 1.2rem 7%;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+      }
+      .logo {
+        font-size: 2rem;
+        font-weight: 800;
+        color: white;
+        letter-spacing: -1px;
+      }
+      .navbar.scrolled .logo {
+        color: #111;
+      }
+      .logo span {
+        color: #00d4aa;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+      }
+      .nav-links a {
+        color: white;
+        margin-left: 2.5rem;
+        font-weight: 600;
+        text-decoration: none;
+        font-size: 1.05rem;
+        position: relative;
+        transition: 0.3s;
+      }
+      .navbar.scrolled .nav-links a {
+        color: #222;
+      }
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        bottom: -6px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: #00d4aa;
+        transition: 0.3s;
+      }
+      .nav-links a:hover::after {
+        width: 100%;
+      }
+      .nav-links a:hover {
+        color: #00d4aa;
+      }
+
+      /* HAMBURGER BUTTON */
+      .menu-toggle {
+        display: none;
+        font-size: 2.2rem;
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        color: white;
+        transition: 0.3s;
+        z-index: 1001;
+      }
+      .navbar.scrolled .menu-toggle {
+        color: #111;
+      }
+
+      /* HERO CONTACT */
+      .hero-contact {
+        height: 100vh;
+        background: linear-gradient(rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.78)),
+          url("index img/bekgron2.jpg") center/cover no-repeat fixed;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 0 20px;
+      }
+      .hero-contact h1 {
+        font-size: 5.5rem;
+        font-weight: 800;
+        letter-spacing: -2px;
+        text-shadow: 4px 4px 25px rgba(0, 0, 0, 0.9);
+        margin-bottom: 1.5rem;
+      }
+      .hero-contact p {
+        font-size: 1.8rem;
+        font-weight: 300;
+        max-width: 900px;
+        opacity: 0.95;
+        text-shadow: 2px 2px 12px rgba(0, 0, 0, 0.8);
+        line-height: 1.5;
+      }
+
+      /* CONTACT SECTION */
+      .contact-section {
+        padding: 120px 8%;
+        background: #fafafa;
+        color: #222;
+      }
+      .section-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 2rem;
+        color: #111;
+        position: relative;
+      }
+      .section-title::after {
+        content: "";
+        width: 90px;
+        height: 4px;
+        background: #00d4aa;
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 2px;
+      }
+      .section-desc {
+        font-size: 1.4rem;
+        color: #555;
+        max-width: 800px;
+        margin: 0 auto 5rem;
+        line-height: 1.8;
+        text-align: center;
+      }
+      .contact-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 3rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .info-card {
+        background: white;
+        padding: 3.5rem 2rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: 0.4s;
+        text-align: center;
+      }
+      .info-card:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      }
+      .info-card i {
+        font-size: 4rem;
+        color: #00d4aa;
+        margin-bottom: 1.5rem;
+      }
+      .info-card h3 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+        color: #111;
+      }
+      .info-card p {
+        font-size: 1.2rem;
+        color: #00d4aa;
+        font-weight: 600;
+      }
+
+      /* FOOTER PREMIUM – MIRIP ABOUT, KHUSUS CONTACT */
+      footer {
+        background: linear-gradient(135deg, #0f241b 0%, #1e3a2f 100%);
+        color: #b8e6d8;
+        position: relative;
+        overflow: hidden;
+        padding: 100px 20px 40px;
+      }
+      footer::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 8px;
+        background: linear-gradient(90deg, #00d4aa, #4caf50, #8bc34a);
+        opacity: 0.9;
+      }
+      .footer-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+      }
+
+      .footer-top-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(184, 230, 216, 0.4);
+        font-size: 0.8rem;
+        margin-bottom: 20px;
+        background: rgba(0, 0, 0, 0.18);
+      }
+      .footer-top-badge i {
+        color: #00d4aa;
+      }
+
+      .footer-content {
+        margin-top: 10px;
+      }
+
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 2.2fr 1.6fr 1.6fr;
+        gap: 40px;
+        margin-bottom: 40px;
+      }
+      .footer-about h3 {
+        font-size: 1.9rem;
+        margin-bottom: 0.9rem;
+        color: #e5fff3;
+      }
+      .footer-about p {
+        font-size: 0.96rem;
+        line-height: 1.7;
+        color: #d0f0e4;
+        max-width: 360px;
+      }
+      .footer-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 14px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(184, 230, 216, 0.5);
+        font-size: 0.8rem;
+        color: #c9f3e5;
+        background: rgba(0, 0, 0, 0.3);
+      }
+      .footer-badge i {
+        color: #00d4aa;
+      }
+
+      .footer-links h4,
+      .footer-contact h4 {
+        font-size: 1.05rem;
+        margin-bottom: 1rem;
+        color: #e0f7ec;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .footer-links ul {
+        list-style: none;
+        padding: 0;
+      }
+      .footer-links ul li {
+        margin-bottom: 10px;
+      }
+      .footer-links ul li a {
+        color: #b8e6d8;
+        text-decoration: none;
+        font-size: 0.95rem;
+        display: inline-flex;
+        align-items: center;
+        transition: 0.3s;
+      }
+      .footer-links ul li a:hover {
+        color: #a8e6cf;
+        padding-left: 8px;
+      }
+      .footer-links ul li a i {
+        margin-right: 8px;
+        color: #00d4aa;
+      }
+
+      .footer-contact p {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 16px;
+        font-size: 0.98rem;
+      }
+      .footer-contact i {
+        color: #00d4aa;
+        margin-right: 14px;
+        width: 20px;
+        margin-top: 3px;
+      }
+      .social-icons {
+        margin-top: 20px;
+        display: flex;
+        gap: 12px;
+      }
+      .social-icons a {
+        width: 44px;
+        height: 44px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #e5fff3;
+        text-decoration: none;
+        transition: 0.3s;
+      }
+      .social-icons a:hover {
+        transform: translateY(-3px);
+        background: #00d4aa;
+        color: #042318;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+      }
+
+      .footer-bottom {
+        border-top: 1px solid rgba(184, 230, 216, 0.25);
+        padding-top: 18px;
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+        font-size: 0.85rem;
+        color: #a5d9c7;
+      }
+      .footer-bottom a {
+        color: #c4f2dd;
+        text-decoration: none;
+      }
+      .footer-bottom a:hover {
+        text-decoration: underline;
+      }
+
+      /* Daun dekor */
+      .leaf-decor {
+        position: absolute;
+        opacity: 0.08;
+        pointer-events: none;
+        animation: float 20s infinite linear;
+      }
+      .leaf1 {
+        top: 18%;
+        left: 6%;
+        width: 210px;
+        animation-delay: 0s;
+      }
+      .leaf2 {
+        bottom: 20%;
+        right: 8%;
+        width: 190px;
+        animation-delay: 8s;
+      }
+      @keyframes float {
+        0% {
+          transform: translateY(0) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-18px) rotate(6deg);
+        }
+        100% {
+          transform: translateY(0) rotate(360deg);
+        }
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 1024px) {
+        .footer-grid {
+          grid-template-columns: 1.8fr 1.2fr 1.4fr;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .hero-contact h1 {
+          font-size: 3.5rem;
+        }
+        .hero-contact p {
+          font-size: 1.3rem;
+        }
+        .section-title {
+          font-size: 2.8rem;
+        }
+        .contact-section {
+          padding: 80px 5%;
+        }
+
+        /* Tampilkan burger di mobile */
+        .menu-toggle {
+          display: block;
+        }
+
+        /* Fullscreen nav di mobile */
+        .nav-links {
+          position: fixed;
+          top: 0;
+          right: -100%;
+          width: 100%;
+          height: 100vh;
+          background: rgba(0, 0, 0, 0.97);
+          backdrop-filter: blur(20px);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          gap: 2rem;
+          transition: right 0.6s cubic-bezier(0.77, 0, 0.18, 1);
+          z-index: 999;
+        }
+        .nav-links a {
+          margin: 0;
+          font-size: 2rem;
+          color: white;
+        }
+        .nav-links.active {
+          right: 0;
+        }
+
+        .nav-links a::after {
+          background: #3b82f6;
+        }
+        .navbar.scrolled .nav-links a {
+          color: white;
+        }
+
+        .footer-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+      <div class="logo">Nature<span>Intuition</span></div>
+
+      <!-- NAV LINKS (Artikel ditambahkan di sini) -->
+      <div class="nav-links" id="navLinks">
+        <a href="masuk.html">Home</a>
+        <a href="3in1.html">Experience</a>
+        <a href="artikel.html">Artikel</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </div>
+
+      <!-- HAMBURGER -->
+      <div class="menu-toggle" id="menuToggle">☰</div>
+    </nav>
+
+    <!-- HERO CONTACT -->
+    <div class="hero-contact">
+      <h1>Hubungi Kami</h1>
+      <p>Kami selalu senang mendengar dari kamu yang juga mencintai alam</p>
+    </div>
+
+    <!-- CONTACT INFO -->
+    <div class="contact-section">
+      <h2 class="section-title">Ada pertanyaan?</h2>
+      <p class="section-desc">
+        Kirim pesan ke kami kapan saja. Kami akan balas kalau sempat!
+      </p>
+
+      <div class="contact-info">
+        <div class="info-card">
+          <i class="fas fa-envelope"></i>
+          <h3>Email</h3>
+          <p>ericksurbaktii@gmail.com</p>
+        </div>
+        <div class="info-card">
+          <i class="fab fa-instagram"></i>
+          <h3>Instagram</h3>
+          <p>@natureintuition</p>
+        </div>
+        <div class="info-card">
+          <i class="fab fa-tiktok"></i>
+          <h3>TikTok</h3>
+          <p>@natureintuition</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER PREMIUM (VERSI CONTACT) -->
+    <footer>
+      <div class="footer-inner">
+        <div class="footer-top-badge">
+          <i class="fa-solid fa-message"></i>
+        </div>
+
+        <img
+          src="https://i.postimg.cc/0jMMqW1g/leaf1.png"
+          class="leaf-decor leaf1"
+          alt=""
+        />
+        <img
+          src="https://i.postimg.cc/0jMMqW1g/leaf1.png"
+          class="leaf-decor leaf2"
+          alt=""
+        />
+
+        <div class="footer-content">
+          <div class="footer-grid">
+            <div class="footer-about">
+              <h3>Nature<span style="color: #00d4aa">Intuition</span></h3>
+              <p>
+                Kami percaya obrolan yang tulus bisa jadi awal perubahan. Dari
+                pertanyaan kecil sampai rencana besar, kami siap dengerin.
+              </p>
+              <div class="footer-badge">
+                <i class="fa-solid fa-circle-check"></i>
+              </div>
+            </div>
+
+            <div class="footer-links">
+              <h4>Menu</h4>
+              <ul>
+                <li>
+                  <a href="masuk.html">
+                    <i class="fa-solid fa-house"></i> Home
+                  </a>
+                </li>
+                <li>
+                  <a href="3in1.html">
+                    <i class="fa-solid fa-person-hiking"></i> Experience
+                  </a>
+                </li>
+                <li>
+                  <a href="artikel.html">
+                    <i class="fa-solid fa-newspaper"></i> Artikel
+                  </a>
+                </li>
+                <li>
+                  <a href="about.html">
+                    <i class="fa-solid fa-circle-info"></i> About
+                  </a>
+                </li>
+                <li>
+                  <a href="contact.html">
+                    <i class="fa-solid fa-envelope"></i> Contact
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div class="footer-contact">
+              <h4>Hubungi Kami</h4>
+              <p>
+                <i class="fa-solid fa-location-dot"></i>
+                <span>Isekai</span>
+              </p>
+              <p>
+                <i class="fa-solid fa-phone"></i>
+                <span>+62 821-2478-9077</span>
+              </p>
+              <p>
+                <i class="fa-solid fa-envelope"></i>
+                <span>ericksurbaktii@gmail.com</span>
+              </p>
+
+              <div class="social-icons">
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="#"><i class="fa-brands fa-youtube"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer-bottom">
+            <p>
+              © 2025 Nature Intuition Indonesia. Made with ❤️ for Mother Earth
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // navbar scroll effect
+      window.addEventListener("scroll", () => {
+        document
+          .getElementById("navbar")
+          .classList.toggle("scrolled", window.scrollY > 100);
+      });
+
+      // burger menu logic
+      const menuToggle = document.getElementById("menuToggle");
+      const navLinks = document.getElementById("navLinks");
+
+      menuToggle.addEventListener("click", () => {
+        navLinks.classList.toggle("active");
+        const open = navLinks.classList.contains("active");
+        menuToggle.textContent = open ? "✕" : "☰";
+        document.body.style.overflow = open ? "hidden" : "auto";
+      });
+
+      // close nav when link clicked (mobile)
+      navLinks.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+          if (navLinks.classList.contains("active")) {
+            navLinks.classList.remove("active");
+            menuToggle.textContent = "☰";
+            document.body.style.overflow = "auto";
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

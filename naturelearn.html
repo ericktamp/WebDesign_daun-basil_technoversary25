@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WildLearn - Hewan Daratan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        color: #1a4d2e;
+        background: #f0f8f0;
+        overflow: hidden;
+      }
+
+      /* ANIMASI DAUN BERGUGURAN */
+      .leaves-animation {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 10000;
+        pointer-events: none;
+        opacity: 1;
+        transition: opacity 2s ease-out;
+        perspective: 1000px;
+      }
+      .leaves-animation.fade-out {
+        opacity: 0;
+      }
+      .leaf {
+        position: absolute;
+        width: clamp(20px, 2vw, 35px);
+        height: clamp(30px, 3.5vw, 55px);
+        background: #4a7c3a;
+        border-radius: 50% 5% 50% 5%;
+        transform-style: preserve-3d;
+        backface-visibility: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        filter: blur(0.5px);
+        animation: fall linear infinite;
+        opacity: 0;
+      }
+      @keyframes fall {
+        0% {
+          transform: translateY(-20vh) rotateZ(0deg) rotateX(0deg) rotateY(0deg)
+            scale(1);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        50% {
+          transform: translateY(120vh) rotateZ(360deg) rotateX(180deg)
+            rotateY(90deg) scale(0.9);
+          opacity: 0.7;
+        }
+        100% {
+          transform: translateY(200vh) rotateZ(720deg) rotateX(360deg)
+            rotateY(180deg) scale(0.8);
+          opacity: 0;
+        }
+      }
+
+      /* Variasi daun */
+      .leaf:nth-child(1) {
+        left: 5%;
+        animation-duration: 12s;
+        animation-delay: 0s;
+        background: #2d5016;
+        width: 22px;
+        height: 35px;
+      }
+      .leaf:nth-child(2) {
+        left: 15%;
+        animation-duration: 9s;
+        animation-delay: 1.5s;
+        background: #3d6b29;
+        width: 28px;
+        height: 45px;
+      }
+      .leaf:nth-child(3) {
+        left: 25%;
+        animation-duration: 14s;
+        animation-delay: 3s;
+        background: #4a7c3a;
+        width: 20px;
+        height: 30px;
+      }
+      .leaf:nth-child(4) {
+        left: 35%;
+        animation-duration: 10s;
+        animation-delay: 0.5s;
+        background: #3d6b29;
+        width: 30px;
+        height: 50px;
+      }
+      .leaf:nth-child(5) {
+        left: 45%;
+        animation-duration: 11s;
+        animation-delay: 2.5s;
+        background: #2d5016;
+        width: 25px;
+        height: 40px;
+      }
+      .leaf:nth-child(6) {
+        left: 55%;
+        animation-duration: 8s;
+        animation-delay: 4s;
+        background: #4a7c3a;
+        width: 32px;
+        height: 52px;
+      }
+      .leaf:nth-child(7) {
+        left: 65%;
+        animation-duration: 13s;
+        animation-delay: 1s;
+        background: #2d5016;
+        width: 23px;
+        height: 38px;
+      }
+      .leaf:nth-child(8) {
+        left: 75%;
+        animation-duration: 9.5s;
+        animation-delay: 2s;
+        background: #3d6b29;
+        width: 27px;
+        height: 42px;
+      }
+      .leaf:nth-child(9) {
+        left: 85%;
+        animation-duration: 11.5s;
+        animation-delay: 3.5s;
+        background: #4a7c3a;
+        width: 30px;
+        height: 48px;
+      }
+      .leaf:nth-child(10) {
+        left: 95%;
+        animation-duration: 10.5s;
+        animation-delay: 0.8s;
+        background: #2d5016;
+        width: 26px;
+        height: 40px;
+      }
+      .leaf:nth-child(11) {
+        left: 12%;
+        animation-duration: 8s;
+        animation-delay: 0.2s;
+        background: #4a7c3a;
+        width: 20px;
+        height: 33px;
+      }
+      .leaf:nth-child(12) {
+        left: 22%;
+        animation-duration: 10s;
+        animation-delay: 1.8s;
+        background: #2d5016;
+        width: 30px;
+        height: 50px;
+      }
+      .leaf:nth-child(13) {
+        left: 32%;
+        animation-duration: 7s;
+        animation-delay: 3.2s;
+        background: #3d6b29;
+        width: 24px;
+        height: 39px;
+      }
+      .leaf:nth-child(14) {
+        left: 42%;
+        animation-duration: 11s;
+        animation-delay: 0.7s;
+        background: #4a7c3a;
+        width: 29px;
+        height: 47px;
+      }
+      .leaf:nth-child(15) {
+        left: 52%;
+        animation-duration: 9s;
+        animation-delay: 2.7s;
+        background: #2d5016;
+        width: 21px;
+        height: 36px;
+      }
+      .leaf:nth-child(16) {
+        left: 62%;
+        animation-duration: 12s;
+        animation-delay: 4.2s;
+        background: #3d6b29;
+        width: 33px;
+        height: 55px;
+      }
+      .leaf:nth-child(17) {
+        left: 72%;
+        animation-duration: 8.5s;
+        animation-delay: 1.3s;
+        background: #4a7c3a;
+        width: 25px;
+        height: 40px;
+      }
+      .leaf:nth-child(18) {
+        left: 82%;
+        animation-duration: 10.5s;
+        animation-delay: 2.3s;
+        background: #2d5016;
+        width: 28px;
+        height: 45px;
+      }
+      .leaf:nth-child(19) {
+        left: 92%;
+        animation-duration: 7.5s;
+        animation-delay: 3.8s;
+        background: #3d6b29;
+        width: 23px;
+        height: 37px;
+      }
+      .leaf:nth-child(20) {
+        left: 8%;
+        animation-duration: 13s;
+        animation-delay: 0.4s;
+        background: #4a7c3a;
+        width: 27px;
+        height: 43px;
+      }
+
+      /* NAVBAR */
+      .navbar {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        padding: 1.8rem 7%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000;
+        transition: all 0.4s ease;
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      .navbar.show {
+        opacity: 1;
+        transform: translateY(0);
+        transition: all 0.8s 3s ease;
+      }
+      .navbar.scrolled {
+        background: rgba(255, 255, 255, 0.97);
+        backdrop-filter: blur(12px);
+        padding: 1.2rem 7%;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      }
+      .logo {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #2d5016;
+        letter-spacing: -1px;
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      }
+      .logo span {
+        color: #4a7c3a;
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+      }
+      .nav-links a {
+        color: #2d5016;
+        margin-left: 2.5rem;
+        font-weight: 600;
+        text-decoration: none;
+        font-size: 1.05rem;
+        position: relative;
+        transition: color 0.3s;
+      }
+      .navbar.scrolled .nav-links a {
+        color: #1a4d2e;
+      }
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        bottom: -6px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: #4a7c3a;
+        transition: 0.3s;
+      }
+      .nav-links a:hover::after {
+        width: 100%;
+      }
+      .nav-links a:hover {
+        color: #4a7c3a;
+      }
+      .menu-toggle {
+        display: none;
+        font-size: 2.2rem;
+        cursor: pointer;
+        z-index: 1001;
+        color: #f5fbe9;
+      }
+      .navbar.scrolled .menu-toggle {
+        color: #1a4d2e;
+      }
+
+      /* MAIN CONTENT */
+      .main-content {
+        opacity: 0;
+        transform: scale(0.9);
+        transition: all 1s 3.5s ease;
+      }
+      .main-content.show {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      /* HERO */
+      .hero {
+        min-height: 100vh;
+        background: linear-gradient(
+          135deg,
+          #2d5016 0%,
+          #3d6b29 50%,
+          #4a7c3a 100%
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 100px 7%;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 200px;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"><path fill="%23f0f8f0" d="M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,48C672,43,768,53,864,58.7C960,64,1056,64,1152,58.7L1200,53.3L1200,120L0,120Z"></path></svg>')
+          no-repeat bottom;
+        background-size: cover;
+      }
+      .hero-content {
+        max-width: 1200px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+      }
+      .hero-text h1 {
+        font-size: 4rem;
+        color: white;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+      }
+      .hero-text p {
+        font-size: 1.3rem;
+        color: #e8f5e9;
+        margin-bottom: 2rem;
+        line-height: 1.8;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+      }
+      .btn-primary {
+        padding: 1.2rem 3rem;
+        background: white;
+        color: #2d5016;
+        font-weight: 700;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: 0.25s;
+        border: none;
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+      }
+      .btn-primary:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.3);
+      }
+      .hero-image img {
+        width: 100%;
+        max-width: 500px;
+        filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.5));
+      }
+      @keyframes floatImg {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+      .hero-image {
+        animation: floatImg 4s ease-in-out infinite;
+      }
+
+      /* SECTION */
+      .category-section,
+      .animals-section {
+        padding: 100px 7%;
+        background: #f0f8f0;
+      }
+      .quiz-section {
+        padding: 100px 7%;
+        background: linear-gradient(135deg, #68d16d 0%, #3ba072 100%);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 -14px 35px rgba(0, 0, 0, 0.25) inset;
+      }
+      .quiz-section::before {
+        content: "🐾";
+        position: absolute;
+        font-size: 15rem;
+        opacity: 0.06;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      .quiz-intro {
+        position: relative;
+        z-index: 10;
+      }
+      .quiz-intro h2 {
+        font-size: 3rem;
+        color: white;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+      }
+      .quiz-intro p {
+        font-size: 1.3rem;
+        color: #e0f7ff;
+        margin-bottom: 2rem;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+      }
+      .btn-quiz {
+        display: inline-block;
+        padding: 1.5rem 4rem;
+        background: white;
+        color: #256d3c;
+        font-weight: 700;
+        font-size: 1.2rem;
+        border-radius: 50px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.25s;
+        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.4);
+      }
+      .btn-quiz:hover {
+        transform: translateY(-6px) scale(1.03);
+        box-shadow: 0 18px 42px rgba(0, 0, 0, 0.5);
+      }
+
+      .section-title {
+        text-align: center;
+        font-size: 3rem;
+        color: #2d5016;
+        margin-bottom: 3rem;
+        position: relative;
+      }
+      .section-title::after {
+        content: "";
+        width: 100px;
+        height: 4px;
+        background: #4a7c3a;
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 2px;
+      }
+
+      .category-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2.5rem;
+        margin-top: 3rem;
+      }
+      .category-card {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 20px;
+        text-align: center;
+        transition: 0.3s;
+        cursor: pointer;
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        box-shadow: 0 14px 35px rgba(0, 0, 0, 0.16);
+      }
+      .category-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.22);
+      }
+      .category-icon {
+        font-size: 5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .animals-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 3rem;
+        margin-top: 3rem;
+      }
+      .animal-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        transition: 0.3s;
+        cursor: pointer;
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+      }
+      .animal-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+      }
+      .animal-image {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+      }
+      .animal-info {
+        padding: 2rem;
+      }
+      .animal-tag {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: #4a7c3a;
+        color: white;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 6px 14px rgba(34, 87, 45, 0.5);
+      }
+      .animal-info h3 {
+        font-size: 1.6rem;
+        color: #2d5016;
+        margin-bottom: 0.5rem;
+      }
+      .animal-subtitle {
+        color: #666;
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+      }
+      .animal-habitat {
+        color: #4a7c3a;
+        font-weight: 600;
+      }
+
+      footer {
+        background: #1a4d2e;
+        color: white;
+        padding: 80px 7% 40px;
+        text-align: center;
+        box-shadow: 0 -12px 35px rgba(0, 0, 0, 0.35);
+      }
+      footer h2 {
+        font-size: 2rem;
+        color: #8fd49c;
+        margin-bottom: 1rem;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      }
+
+      /* MODAL */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(10px);
+        z-index: 2000;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.4s;
+      }
+      .modal-overlay.show {
+        display: flex;
+        opacity: 1;
+      }
+      .modal-content {
+        background: white;
+        border-radius: 24px;
+        max-width: 900px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        transform: scale(0.8);
+        animation: modalPop 0.4s ease forwards;
+        border: 1px solid rgba(148, 163, 184, 0.5);
+      }
+      @keyframes modalPop {
+        to {
+          transform: scale(1);
+        }
+      }
+      .modal-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        border-radius: 24px 24px 0 0;
+      }
+      .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        font-size: 1.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: 0.25s;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+      }
+      .close-btn:hover {
+        background: #e74c3c;
+        transform: rotate(90deg) scale(1.05);
+      }
+      .modal-body {
+        padding: 2.5rem;
+      }
+      .modal-body h2 {
+        font-size: 2.2rem;
+        color: #2d5016;
+        margin-bottom: 0.5rem;
+      }
+      .modal-body .subtitle {
+        font-size: 1.1rem;
+        color: #4a7c3a;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+      }
+      .modal-body p,
+      .modal-body ul {
+        font-size: 1.05rem;
+        line-height: 1.8;
+        color: #444;
+      }
+      .modal-body ul {
+        padding-left: 2rem;
+        margin: 1rem 0;
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 768px) {
+        .navbar {
+          padding: 1.3rem 5%;
+        }
+        .logo {
+          font-size: 1.6rem;
+        }
+
+        .menu-toggle {
+          display: block;
+        }
+
+        /* Fullscreen nav mobile */
+        .nav-links {
+          position: fixed;
+          top: 0;
+          right: -100%;
+          width: 100%;
+          height: 100vh;
+          background: rgba(0, 0, 0, 0.97);
+          backdrop-filter: blur(18px);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          gap: 2rem;
+          transition: right 0.45s cubic-bezier(0.77, 0, 0.18, 1);
+          z-index: 999;
+        }
+        .nav-links.active {
+          right: 0;
+        }
+        .nav-links a {
+          margin: 0;
+          font-size: 1.9rem !important;
+          color: white !important;
+          font-weight: 700;
+        }
+        .nav-links a::after {
+          background: #4ade80;
+        }
+
+        .hero {
+          padding: 110px 7% 80px;
+        }
+        .hero-content {
+          grid-template-columns: 1fr;
+          text-align: center;
+          gap: 2.5rem;
+        }
+        .hero-text h1 {
+          font-size: 2.6rem;
+        }
+        .hero-text p {
+          font-size: 1.05rem;
+        }
+        .hero-image {
+          max-width: 320px;
+          margin: 0 auto;
+        }
+
+        .category-section,
+        .animals-section,
+        .quiz-section {
+          padding: 70px 6%;
+        }
+        .section-title {
+          font-size: 2.2rem;
+        }
+        .category-grid,
+        .animals-grid {
+          grid-template-columns: 1fr;
+        }
+        .modal-image {
+          height: 260px;
+        }
+        .modal-body {
+          padding: 1.8rem;
+        }
+        .modal-body h2 {
+          font-size: 1.8rem;
+        }
+        .modal-body p,
+        .modal-body ul {
+          font-size: 0.98rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .hero-text h1 {
+          font-size: 2.3rem;
+        }
+        .hero-text p {
+          font-size: 1rem;
+        }
+        .btn-primary,
+        .btn-quiz {
+          width: 100%;
+          text-align: center;
+        }
+        .section-title {
+          font-size: 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Daun -->
+    <div class="leaves-animation" id="leavesAnimation">
+      <div class="leaf"></div>
+      <div class="leaf"></div>
+      <div class="leaf"></div>
+      <div class="leaf"></div>
+      <div class="leaf"></div>
+      <div class="leaf"></div>
+      <div class="leaf"></div>
+      <div class="leaf"></div>
+      <div class="leaf"></div>
+      <div class="leaf"></div>
+      <div class="leaf"></div>
+      <div class="leaf"></div>
+      <div class="leaf"></div>
+      <div class="leaf"></div>
+      <div class="leaf"></div>
+      <div class="leaf"></div>
+      <div class="leaf"></div>
+      <div class="leaf"></div>
+      <div class="leaf"></div>
+      <div class="leaf"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+      <div class="logo">Wild<span>Learn</span></div>
+      <div class="nav-links" id="navLinks">
+        <a href="masuk.html">Home</a>
+        <a href="3in1.html">Experience</a>
+        <a href="artikel.html">Artikel</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="#hewan">Hewan Darat</a>
+      </div>
+      <div class="menu-toggle" id="menuToggle">☰</div>
+    </nav>
+
+    <div class="main-content" id="mainContent">
+      <!-- Hero -->
+      <section class="hero" id="home">
+        <div class="hero-content">
+          <div class="hero-text">
+            <h1>Jelajahi Hutan</h1>
+            <p>
+              Masuki dunia penuh kehidupan di daratan! Pelajari tentang mamalia,
+              reptil, dan amfibi yang menghuni hutan-hutan di seluruh dunia.
+            </p>
+            <a href="#hewan" class="btn-primary">Mulai Petualangan</a>
+          </div>
+          <div class="hero-image">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/3069/3069172.png"
+              alt="Wildlife"
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- Kategori -->
+      <section class="category-section" id="kategori">
+        <h2 class="section-title">Kategori Hewan Daratan</h2>
+        <div class="category-grid">
+          <div class="category-card">
+            <div class="category-icon">🦁</div>
+            <h3>Mamalia</h3>
+            <p>
+              Hewan menyusui dengan beragam habitat dan karakteristik unik di
+              seluruh daratan.
+            </p>
+          </div>
+          <div class="category-card">
+            <div class="category-icon">🦎</div>
+            <h3>Reptil</h3>
+            <p>
+              Hewan bersisik yang telah ada sejak zaman purba dan bertahan
+              hingga kini.
+            </p>
+          </div>
+          <div class="category-card">
+            <div class="category-icon">🐸</div>
+            <h3>Amfibi</h3>
+            <p>Makhluk unik yang dapat hidup di dua alam: air dan daratan.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Daftar Hewan -->
+      <section class="animals-section" id="hewan">
+        <h2 class="section-title">Hewan-Hewan Daratan</h2>
+        <div class="animals-grid">
+          <div class="animal-card" data-index="0">
+            <img
+              src="https://images.unsplash.com/photo-1614027164847-1b28cfe1df60?w=500"
+              alt="Singa"
+              class="animal-image"
+            />
+            <div class="animal-info">
+              <span class="animal-tag">Mamalia</span>
+              <h3>Singa</h3>
+              <p class="animal-subtitle">Panthera leo - Raja Hutan</p>
+              <p class="animal-habitat">Habitat: Afrika & India</p>
+            </div>
+          </div>
+
+          <div class="animal-card" data-index="1">
+            <img
+              src="https://images.unsplash.com/photo-1564760055775-d63b17a55c44?w=500"
+              alt="Gajah"
+              class="animal-image"
+            />
+            <div class="animal-info">
+              <span class="animal-tag">Mamalia</span>
+              <h3>Gajah</h3>
+              <p class="animal-subtitle">Elephantidae - Raksasa Darat</p>
+              <p class="animal-habitat">Habitat: Afrika & Asia</p>
+            </div>
+          </div>
+
+          <div class="animal-card" data-index="2">
+            <img
+              src="https://www.balisafarimarinepark.com/wp-content/uploads/2023/03/mau3.jpeg"
+              alt="Harimau"
+              class="animal-image"
+            />
+            <div class="animal-info">
+              <span class="animal-tag">Mamalia</span>
+              <h3>Harimau</h3>
+              <p class="animal-subtitle">Panthera tigris - Predator Puncak</p>
+              <p class="animal-habitat">Habitat: Asia</p>
+            </div>
+          </div>
+
+          <div class="animal-card" data-index="3">
+            <img
+              src="https://www.thoughtco.com/thmb/zqOFYa0PbMugwhG20KR9GCbxlJg=/2121x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-637650476-6ef244bb2ce548d1b92e8556877b6210.jpg"
+              alt="Komodo"
+              class="animal-image"
+            />
+            <div class="animal-info">
+              <span class="animal-tag">Reptil</span>
+              <h3>Komodo</h3>
+              <p class="animal-subtitle">Varanus komodoensis - Naga Komodo</p>
+              <p class="animal-habitat">Habitat: Indonesia</p>
+            </div>
+          </div>
+
+          <div class="animal-card" data-index="4">
+            <img
+              src="https://images.unsplash.com/photo-1525382455947-f319bc05fb35?w=500"
+              alt="Panda"
+              class="animal-image"
+            />
+            <div class="animal-info">
+              <span class="animal-tag">Mamalia</span>
+              <h3>Panda</h3>
+              <p class="animal-subtitle">
+                Ailuropoda melanoleuca - Ikon Konservasi
+              </p>
+              <p class="animal-habitat">Habitat: China</p>
+            </div>
+          </div>
+
+          <div class="animal-card" data-index="5">
+            <img
+              src="https://tse4.mm.bing.net/th/id/OIP.-26yUBAqdf3O0q013tAkLQAAAA?pid=Api&P=0&h=180"
+              alt="Katak"
+              class="animal-image"
+            />
+            <div class="animal-info">
+              <span class="animal-tag">Amfibi</span>
+              <h3>Katak Beracun</h3>
+              <p class="animal-subtitle">Dendrobatidae - Sang Pembawa Warna</p>
+              <p class="animal-habitat">Habitat: Amerika Selatan</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quiz -->
+      <section class="quiz-section">
+        <div class="quiz-intro">
+          <h2>🧠 Uji Otakmu Tentang Dunia Hewan!</h2>
+          <p>Daratan, Udara, atau Lautan — seberapa jago kamu?</p>
+          <a href="quiz.html" class="btn-quiz">Mulai Kuis Sekarang!</a>
+        </div>
+      </section>
+
+      <footer>
+        <h2>WildLearn</h2>
+        <p>Belajar, Jelajahi, dan Lestarikan Alam Bersama</p>
+        <p style="margin-top: 2rem; opacity: 0.7">
+          © 2025 WildLearn. Semua hak dilindungi.
+        </p>
+      </footer>
+    </div>
+
+    <!-- MODAL DETAIL HEWAN -->
+    <div class="modal-overlay" id="animalModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <img id="modalImg" class="modal-image" src="" alt="" />
+          <div class="close-btn" id="closeModal">×</div>
+        </div>
+        <div class="modal-body">
+          <h2 id="modalTitle"></h2>
+          <div class="subtitle" id="modalSubtitle"></div>
+          <div id="modalDesc"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATA HEWAN -->
+    <script>
+      const animals = [
+        {
+          name: "Singa",
+          sci: "Panthera leo - Raja Hutan",
+          habitat: "Afrika & India",
+          img: "https://images.unsplash.com/photo-1614027164847-1b28cfe1df60?w=800",
+          desc: `<p><strong>Singa</strong> adalah kucing besar yang hidup berkelompok (pride). Hanya pejantan yang punya surai.</p>
+              <ul><li>Berat jantan hingga 250 kg</li><li>Betina berburu, jantan jaga wilayah</li><li>Status: Rentan</li></ul>
+              <p>Singa satu-satunya kucing yang hidup sosial. Satu pride bisa sampai 30 ekor.</p>`,
+        },
+        {
+          name: "Gajah",
+          sci: "Elephantidae - Raksasa Darat",
+          habitat: "Afrika & Asia",
+          img: "https://images.unsplash.com/photo-1564760055775-d63b17a55c44?w=800",
+          desc: `<p>Hewan darat terbesar yang masih hidup.</p>
+              <ul><li>Berat 4–7 ton</li><li>Belalai punya 40.000+ otot</li><li>Status: Terancam punah</li></ul>
+              <p>Gajah sangat cerdas dan menunjukkan empati serta duka.</p>`,
+        },
+        {
+          name: "Harimau",
+          sci: "Panthera tigris - Predator Puncak",
+          habitat: "Asia",
+          img: "https://www.balisafarimarinepark.com/wp-content/uploads/2023/03/mau3.jpeg",
+          desc: `<p>Kucing terbesar di dunia, tersisa ±3.900 ekor di alam liar.</p>
+              <ul><li>6 subspesies hidup</li><li>Bisa berenang jauh</li><li>Status: Terancam punah</li></ul>`,
+        },
+        {
+          name: "Komodo",
+          sci: "Varanus komodoensis - Naga Komodo",
+          habitat: "Indonesia",
+          img: "https://www.thoughtco.com/thmb/zqOFYa0PbMugwhG20KR9GCbxlJg=/2121x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-637650476-6ef244bb2ce548d1b92e8556877b6210.jpg",
+          desc: `<p>Kadal terbesar di dunia, hanya di Pulau Komodo & sekitarnya.</p>
+              <ul><li>Panjang hingga 3 m</li><li>Berat >70 kg</li><li>Air liur beracun</li></ul>`,
+        },
+        {
+          name: "Panda",
+          sci: "Ailuropoda melanoleuca - Ikon Konservasi",
+          habitat: "China",
+          img: "https://images.unsplash.com/photo-1525382455947-f319bc05fb35?w=800",
+          desc: `<p>99% makan bambu meski karnivora.</p>
+              <ul><li>Hidup di pegunungan China</li><li>Status: Rentan (dulu Terancam)</li></ul>`,
+        },
+        {
+          name: "Katak Beracun",
+          sci: "Dendrobatidae - Sang Pembawa Warna",
+          habitat: "Amerika Selatan",
+          img: "https://tse4.mm.bing.net/th/id/OIP.-26yUBAqdf3O0q013tAkLQAAAA?pid=Api&P=0&h=180",
+          desc: `<p>Warna cerah = peringatan racun mematikan.</p>
+              <ul><li>Racun cukup bunuh 10 orang</li><li>Digunakan suku Indian untuk panah</li></ul>`,
+        },
+      ];
+
+      // Buka Modal
+      document.querySelectorAll(".animal-card").forEach((card, i) => {
+        card.addEventListener("click", () => {
+          const a = animals[i];
+          document.getElementById("modalImg").src = a.img;
+          document.getElementById("modalTitle").textContent = a.name;
+          document.getElementById("modalSubtitle").textContent =
+            a.sci + " • " + a.habitat;
+          document.getElementById("modalDesc").innerHTML = a.desc;
+          document.getElementById("animalModal").classList.add("show");
+          document.body.style.overflow = "hidden";
+        });
+      });
+
+      // Tutup Modal
+      function closeModal() {
+        document.getElementById("animalModal").classList.remove("show");
+        document.body.style.overflow = "auto";
+      }
+      document.getElementById("closeModal").onclick = closeModal;
+      document.getElementById("animalModal").onclick = (e) => {
+        if (e.target === document.getElementById("animalModal")) closeModal();
+      };
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeModal();
+      });
+    </script>
+
+    <!-- Script Utama (daun + navbar + hamburger) -->
+    <script>
+      window.addEventListener("load", () => {
+        setTimeout(() => {
+          document.getElementById("leavesAnimation").classList.add("fade-out");
+          document.getElementById("navbar").classList.add("show");
+          document.getElementById("mainContent").classList.add("show");
+          document.body.style.overflow = "auto";
+        }, 3000);
+      });
+
+      window.addEventListener("scroll", () => {
+        document
+          .getElementById("navbar")
+          .classList.toggle("scrolled", window.scrollY > 100);
+      });
+
+      // Hamburger
+      const menuToggle = document.getElementById("menuToggle");
+      const navLinks = document.getElementById("navLinks");
+
+      menuToggle.addEventListener("click", () => {
+        navLinks.classList.toggle("active");
+        const open = navLinks.classList.contains("active");
+        menuToggle.textContent = open ? "✕" : "☰";
+        document.body.style.overflow = open ? "hidden" : "auto";
+      });
+
+      // Tutup menu saat klik link
+      document.querySelectorAll(".nav-links a").forEach((link) => {
+        link.addEventListener("click", () => {
+          if (navLinks.classList.contains("active")) {
+            navLinks.classList.remove("active");
+            menuToggle.textContent = "☰";
+            document.body.style.overflow = "auto";
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

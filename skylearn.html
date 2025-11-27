@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WildLearn - Hewan Udara</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Poppins", sans-serif;
+        color: #1e3a8a;
+        background: #dbeafe;
+        overflow: hidden;
+      }
+
+      /* ANIMASI LANGIT + AWAN + BURUNG */
+      .sky-animation {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 10000;
+        background: linear-gradient(
+          to bottom,
+          #60a5fa 0%,
+          #93c5fd 50%,
+          #bfdbfe 100%
+        );
+        pointer-events: none;
+        opacity: 1;
+        transition: opacity 2s ease-out;
+      }
+      .sky-animation.fade-out {
+        opacity: 0;
+      }
+
+      .sun {
+        position: absolute;
+        top: 10%;
+        right: 10%;
+        width: 100px;
+        height: 100px;
+        background: #fbbf24;
+        border-radius: 50%;
+        box-shadow: 0 0 60px rgba(251, 191, 36, 0.6);
+        animation: pulse 4s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+      }
+
+      .cloud {
+        position: absolute;
+        background: white;
+        border-radius: 100px;
+        opacity: 0.9;
+        filter: blur(1px);
+        box-shadow: 0 5px 15px rgba(15, 23, 42, 0.09);
+        animation: float-cloud linear infinite;
+      }
+      .cloud::before,
+      .cloud::after {
+        content: "";
+        position: absolute;
+        background: white;
+        border-radius: 100px;
+      }
+      .cloud:nth-child(2) {
+        top: 10%;
+        left: 0%;
+        width: 150px;
+        height: 50px;
+        animation-duration: 35s;
+        opacity: 0.7;
+        filter: blur(2px);
+      }
+      .cloud:nth-child(3) {
+        top: 25%;
+        left: 20%;
+        width: 180px;
+        height: 60px;
+        animation-duration: 40s;
+        animation-delay: 5s;
+      }
+      .cloud:nth-child(4) {
+        top: 45%;
+        left: -10%;
+        width: 120px;
+        height: 40px;
+        animation-duration: 28s;
+        animation-delay: 10s;
+      }
+      .cloud:nth-child(5) {
+        top: 70%;
+        left: 50%;
+        width: 200px;
+        height: 70px;
+        animation-duration: 45s;
+        animation-delay: 2s;
+        filter: none;
+      }
+      .cloud:nth-child(odd)::before {
+        width: 50px;
+        height: 50px;
+        top: -25px;
+        left: 10px;
+      }
+      .cloud:nth-child(odd)::after {
+        width: 60px;
+        height: 60px;
+        top: -30px;
+        right: 10px;
+      }
+      .cloud:nth-child(even)::before {
+        width: 70px;
+        height: 70px;
+        top: -35px;
+        left: 40px;
+      }
+      .cloud:nth-child(even)::after {
+        width: 40px;
+        height: 40px;
+        top: -20px;
+        right: 30px;
+      }
+      @keyframes float-cloud {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(110vw);
+        }
+      }
+
+      .bird {
+        position: absolute;
+        font-size: 2.5rem;
+        color: #1e3a8a;
+        text-shadow: 0 2px 6px rgba(15, 23, 42, 0.3);
+        animation: fly linear infinite, wave ease-in-out infinite;
+      }
+      @keyframes fly {
+        0% {
+          left: -10%;
+        }
+        100% {
+          left: 110%;
+        }
+      }
+      @keyframes wave {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+      .bird:nth-child(6) {
+        top: 20%;
+        animation-duration: 15s;
+      }
+      .bird:nth-child(7) {
+        top: 35%;
+        font-size: 2rem;
+        animation-duration: 18s;
+        animation-delay: 3s;
+      }
+      .bird:nth-child(8) {
+        top: 50%;
+        font-size: 3rem;
+        animation-duration: 12s;
+        animation-delay: 6s;
+      }
+      .bird:nth-child(9) {
+        top: 65%;
+        font-size: 2.2rem;
+        animation-duration: 17s;
+        animation-delay: 2s;
+      }
+      .bird:nth-child(10) {
+        top: 40%;
+        font-size: 1.8rem;
+        opacity: 0.8;
+        animation-duration: 22s;
+        animation-delay: 8s;
+      }
+
+      /* NAVBAR */
+      .navbar {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        padding: 1.8rem 7%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000;
+        transition: all 0.4s;
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      .navbar.show {
+        opacity: 1;
+        transform: translateY(0);
+        transition: all 0.8s 3s ease;
+      }
+      .navbar.scrolled {
+        background: rgba(255, 255, 255, 0.97);
+        backdrop-filter: blur(12px);
+        padding: 1.2rem 7%;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.15);
+      }
+      .logo {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #1e3a8a;
+        letter-spacing: -1px;
+        text-shadow: 0 2px 6px rgba(15, 23, 42, 0.25);
+      }
+      .logo span {
+        color: #3b82f6;
+      }
+      .nav-links a {
+        color: #1e3a8a;
+        margin-left: 2.5rem;
+        font-weight: 600;
+        text-decoration: none;
+        font-size: 1.05rem;
+        position: relative;
+        transition: 0.3s;
+      }
+      .navbar.scrolled .nav-links a {
+        color: #1e40af;
+      }
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        bottom: -6px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: #3b82f6;
+        transition: 0.3s;
+      }
+      .nav-links a:hover::after {
+        width: 100%;
+      }
+      .nav-links a:hover {
+        color: #3b82f6;
+      }
+      .menu-toggle {
+        display: none;
+        font-size: 2.2rem;
+        cursor: pointer;
+        z-index: 1001;
+      }
+
+      /* MAIN CONTENT */
+      .main-content {
+        opacity: 0;
+        transform: scale(0.9);
+        transition: all 1s 3.5s ease;
+      }
+      .main-content.show {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      /* HERO */
+      .hero {
+        min-height: 100vh;
+        background: linear-gradient(
+          135deg,
+          #60a5fa 0%,
+          #93c5fd 50%,
+          #bfdbfe 100%
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 100px 7%;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 200px;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"><path fill="%23dbeafe" d="M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,48C672,43,768,53,864,58.7C960,64,1056,64,1152,58.7L1200,53.3L1200,120L0,120Z"></path></svg>')
+          no-repeat bottom;
+        background-size: cover;
+      }
+      .hero-content {
+        max-width: 1200px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+        z-index: 10;
+      }
+      .hero-text h1 {
+        font-size: 4rem;
+        color: white;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 4px 16px rgba(15, 23, 42, 0.45);
+      }
+      .hero-text p {
+        font-size: 1.3rem;
+        color: #eff6ff;
+        margin-bottom: 2rem;
+        line-height: 1.8;
+        text-shadow: 0 2px 8px rgba(15, 23, 42, 0.35);
+      }
+      .btn-primary {
+        padding: 1.2rem 3rem;
+        background: white;
+        color: #1e3a8a;
+        font-weight: 700;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: 0.25s;
+        border: none;
+        box-shadow: 0 14px 30px rgba(15, 23, 42, 0.25);
+      }
+      .btn-primary:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.28);
+      }
+      .hero-image img {
+        width: 100%;
+        max-width: 500px;
+        filter: drop-shadow(0 18px 40px rgba(15, 23, 42, 0.5));
+      }
+      @keyframes soar {
+        0%,
+        100% {
+          transform: translateY(0) rotate(-5deg);
+        }
+        50% {
+          transform: translateY(-30px) rotate(5deg);
+        }
+      }
+      .hero-image {
+        animation: soar 5s ease-in-out infinite;
+      }
+
+      /* SECTIONS */
+      .category-section,
+      .animals-section {
+        padding: 100px 7%;
+        background: #dbeafe;
+      }
+      .section-title {
+        text-align: center;
+        font-size: 3rem;
+        color: #1e3a8a;
+        margin-bottom: 3rem;
+        position: relative;
+      }
+      .section-title::after {
+        content: "";
+        width: 100px;
+        height: 4px;
+        background: #3b82f6;
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 2px;
+      }
+      .category-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2.5rem;
+        margin-top: 3rem;
+      }
+      .category-card {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 20px;
+        text-align: center;
+        transition: 0.3s;
+        border: 1px solid rgba(148, 163, 184, 0.3);
+        cursor: pointer;
+        box-shadow: 0 14px 35px rgba(15, 23, 42, 0.18);
+      }
+      .category-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 45px rgba(15, 23, 42, 0.22);
+      }
+      .category-icon {
+        font-size: 5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .animals-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 3rem;
+        margin-top: 3rem;
+      }
+      .animal-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        transition: 0.3s;
+        cursor: pointer;
+        border: 1px solid rgba(148, 163, 184, 0.3);
+        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.18);
+      }
+      .animal-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+      }
+      .animal-image {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+      }
+      .animal-info {
+        padding: 2rem;
+      }
+      .animal-tag {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: #3b82f6;
+        color: white;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 6px 14px rgba(37, 99, 235, 0.4);
+      }
+      .animal-info h3 {
+        font-size: 1.6rem;
+        color: #1e3a8a;
+        margin-bottom: 0.5rem;
+      }
+      .animal-subtitle,
+      .animal-habitat {
+        color: #666;
+        font-size: 0.95rem;
+      }
+      .animal-habitat {
+        color: #3b82f6;
+        font-weight: 600;
+      }
+
+      .quiz-section {
+        padding: 100px 7%;
+        background: linear-gradient(135deg, #8fe0f1 0%, #77dee2 100%);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 -12px 35px rgba(15, 23, 42, 0.25) inset;
+      }
+
+      .quiz-section::before {
+        content: "🐠";
+        position: absolute;
+        font-size: 15rem;
+        opacity: 0.05;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .quiz-intro {
+        position: relative;
+        z-index: 10;
+      }
+
+      .quiz-intro h2 {
+        font-size: 3rem;
+        color: white;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 4px 16px rgba(15, 23, 42, 0.45);
+      }
+
+      .quiz-intro p {
+        font-size: 1.3rem;
+        color: #e0f7ff;
+        margin-bottom: 2rem;
+        text-shadow: 0 2px 8px rgba(15, 23, 42, 0.35);
+      }
+
+      .btn-quiz {
+        display: inline-block;
+        padding: 1.5rem 4rem;
+        background: white;
+        color: #4a86ce;
+        font-weight: 700;
+        font-size: 1.2rem;
+        border-radius: 50px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.25s;
+        box-shadow: 0 14px 32px rgba(15, 23, 42, 0.4);
+      }
+
+      .btn-quiz:hover {
+        transform: translateY(-6px) scale(1.03);
+        box-shadow: 0 18px 42px rgba(15, 23, 42, 0.5);
+      }
+
+      footer {
+        background: #1e3a8a;
+        color: white;
+        padding: 80px 7% 40px;
+        text-align: center;
+        box-shadow: 0 -10px 35px rgba(15, 23, 42, 0.35);
+      }
+      footer h2 {
+        font-size: 2rem;
+        color: #93c5fd;
+        margin-bottom: 1rem;
+        text-shadow: 0 2px 8px rgba(15, 23, 42, 0.4);
+      }
+
+      /* MODAL */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(15, 23, 42, 0.82);
+        backdrop-filter: blur(12px);
+        z-index: 2000;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.35s;
+      }
+      .modal-overlay.show {
+        display: flex;
+        opacity: 1;
+      }
+      .modal-content {
+        background: white;
+        border-radius: 24px;
+        max-width: 900px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        transform: scale(0.8);
+        animation: modalPop 0.4s ease forwards;
+        border: 1px solid rgba(148, 163, 184, 0.4);
+        box-shadow: 0 22px 60px rgba(15, 23, 42, 0.6);
+      }
+      @keyframes modalPop {
+        to {
+          transform: scale(1);
+        }
+      }
+      .modal-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        border-radius: 24px 24px 0 0;
+      }
+      .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        font-size: 1.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: 0.25s;
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.6);
+      }
+      .close-btn:hover {
+        background: #e74c3c;
+        transform: rotate(90deg) scale(1.05);
+      }
+      .modal-body {
+        padding: 2.5rem;
+      }
+      .modal-body h2 {
+        font-size: 2.2rem;
+        color: #1e3a8a;
+        margin-bottom: 0.5rem;
+      }
+      .modal-body .subtitle {
+        font-size: 1.1rem;
+        color: #3b82f6;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+      }
+      .modal-body p,
+      .modal-body ul {
+        font-size: 1.05rem;
+        line-height: 1.8;
+        color: #444;
+      }
+      .modal-body ul {
+        padding-left: 2rem;
+        margin: 1rem 0;
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 768px) {
+        .navbar {
+          padding: 1.3rem 5%;
+        }
+        .logo {
+          font-size: 1.6rem;
+          text-shadow: 0 1px 4px rgba(15, 23, 42, 0.35);
+        }
+        .hero {
+          padding: 110px 7% 80px;
+        }
+        .hero-content {
+          grid-template-columns: 1fr;
+          text-align: center;
+          gap: 2.5rem;
+        }
+        .hero-text h1 {
+          font-size: 2.6rem;
+        }
+        .hero-text p {
+          font-size: 1.05rem;
+        }
+        .hero-image {
+          max-width: 320px;
+          margin: 0 auto;
+        }
+
+        .menu-toggle {
+          display: block;
+          color: #111827;
+        }
+
+        /* Fullscreen nav mobile */
+        .nav-links {
+          position: fixed;
+          top: 0;
+          right: -100%;
+          width: 100%;
+          height: 100vh;
+          background: rgba(0, 0, 0, 0.97);
+          backdrop-filter: blur(18px);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          gap: 2rem;
+          transition: right 0.45s cubic-bezier(0.77, 0, 0.18, 1);
+          z-index: 999;
+        }
+        .nav-links.active {
+          right: 0;
+        }
+        .nav-links a {
+          margin: 0;
+          font-size: 1.8rem;
+          color: white !important;
+        }
+        .nav-links a::after {
+          background: #3b82f6;
+        }
+
+        .category-section,
+        .animals-section,
+        .quiz-section {
+          padding: 70px 6%;
+        }
+
+        .section-title {
+          font-size: 2.3rem;
+        }
+
+        .animals-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .modal-image {
+          height: 260px;
+        }
+        .modal-body {
+          padding: 1.8rem;
+        }
+        .modal-body h2 {
+          font-size: 1.8rem;
+        }
+        .modal-body p,
+        .modal-body ul {
+          font-size: 0.98rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .hero-text h1 {
+          font-size: 2.3rem;
+        }
+        .hero-text p {
+          font-size: 1rem;
+        }
+        .btn-primary,
+        .btn-quiz {
+          width: 100%;
+          text-align: center;
+        }
+        .section-title {
+          font-size: 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Animasi Langit -->
+    <div class="sky-animation" id="skyAnimation">
+      <div class="sun"></div>
+      <div class="cloud"></div>
+      <div class="cloud"></div>
+      <div class="cloud"></div>
+      <div class="cloud"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+      <div class="logo">Wild<span>Learn</span></div>
+      <div class="nav-links" id="navLinks">
+        <a href="masuk.html">Home</a>
+        <a href="3in1.html">Experience</a>
+        <a href="artikel.html">Artikel</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="#hewan">Hewan Langit</a>
+      </div>
+      <div class="menu-toggle" id="menuToggle">☰</div>
+    </nav>
+
+    <div class="main-content" id="mainContent">
+      <!-- Hero -->
+      <section class="hero" id="home">
+        <div class="hero-content">
+          <div class="hero-text">
+            <h1>Jelajahi Langit</h1>
+            <p>
+              Terbang tinggi dan temui burung-burung menakjubkan yang menguasai
+              langit dengan keindahan dan keanggunan!
+            </p>
+            <a href="#hewan" class="btn-primary">Mulai Terbang</a>
+          </div>
+          <div class="hero-image">
+            <img src="content img/parrot.png" alt="Birds" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Kategori -->
+      <section class="category-section" id="kategori">
+        <h2 class="section-title">Kategori Hewan Udara</h2>
+        <div class="category-grid">
+          <div class="category-card">
+            <div class="category-icon">🦅</div>
+            <h3>Burung Pemangsa</h3>
+            <p>
+              Elang, rajawali, dan burung pemangsa lainnya yang menguasai
+              langit.
+            </p>
+          </div>
+          <div class="category-card">
+            <div class="category-icon">🦜</div>
+            <h3>Burung Eksotis</h3>
+            <p>
+              Burung beo, kakatua, dan burung berwarna-warni dari hutan tropis.
+            </p>
+          </div>
+          <div class="category-card">
+            <div class="category-icon">🦇</div>
+            <h3>Mamalia Terbang</h3>
+            <p>
+              Kelelawar dan mamalia lain yang memiliki kemampuan terbang unik.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Daftar Hewan Udara -->
+      <section class="animals-section" id="hewan">
+        <h2 class="section-title">Hewan-Hewan Udara</h2>
+        <div class="animals-grid">
+          <div class="animal-card" data-index="0">
+            <img
+              src="https://images.unsplash.com/photo-1622545482563-ebd4ec7aab5b?auto=format&fit=crop&w=800&q=80"
+              alt="Elang Emas"
+              class="animal-image"
+            />
+            <div class="animal-info">
+              <span class="animal-tag">Burung Pemangsa</span>
+              <h3>Elang Emas</h3>
+              <p class="animal-subtitle">Aquila chrysaetos - Penguasa Langit</p>
+              <p class="animal-habitat">Habitat: Pegunungan & Lembah</p>
+            </div>
+          </div>
+          <div class="animal-card" data-index="1">
+            <img
+              src="https://images.unsplash.com/photo-1618102292821-ad0f30bb52a6?auto=format&fit=crop&w=800&q=80"
+              alt="Macaw Biru"
+              class="animal-image"
+            />
+            <div class="animal-info">
+              <span class="animal-tag">Burung Eksotis</span>
+              <h3>Macaw Biru</h3>
+              <p class="animal-subtitle">Ara ararauna - Sang Penuh Warna</p>
+              <p class="animal-habitat">Habitat: Hutan Hujan Tropis</p>
+            </div>
+          </div>
+          <div class="animal-card" data-index="2">
+            <img
+              src="https://images.unsplash.com/photo-1553264701-d138db4fd5d4?auto=format&fit=crop&w=800&q=80"
+              alt="Burung Hantu"
+              class="animal-image"
+            />
+            <div class="animal-info">
+              <span class="animal-tag">Burung Pemangsa</span>
+              <h3>Burung Hantu</h3>
+              <p class="animal-subtitle">Strigidae - Pemburu Malam</p>
+              <p class="animal-habitat">Habitat: Hutan & Padang Rumput</p>
+            </div>
+          </div>
+          <div class="animal-card" data-index="3">
+            <img
+              src="https://images.unsplash.com/photo-1520638023360-6def43369781?auto=format&fit=crop&w=800&q=80"
+              alt="Kolibri"
+              class="animal-image"
+            />
+            <div class="animal-info">
+              <span class="animal-tag">Burung Kecil</span>
+              <h3>Kolibri</h3>
+              <p class="animal-subtitle">Trochilidae - Permata Terbang</p>
+              <p class="animal-habitat">Habitat: Taman & Hutan</p>
+            </div>
+          </div>
+          <div class="animal-card" data-index="4">
+            <img
+              src="https://images.unsplash.com/photo-1572610865009-ac1ddf0189f5?auto=format&fit=crop&w=800&q=80"
+              alt="Kelelawar Buah"
+              class="animal-image"
+            />
+            <div class="animal-info">
+              <span class="animal-tag">Mamalia</span>
+              <h3>Kelelawar Buah</h3>
+              <p class="animal-subtitle">Pteropodidae - Penyebar Benih</p>
+              <p class="animal-habitat">Habitat: Gua & Hutan</p>
+            </div>
+          </div>
+          <div class="animal-card" data-index="5">
+            <img
+              src="https://images.unsplash.com/photo-1628703117067-fb7c9c20946e?auto=format&fit=crop&w=800&q=80"
+              alt="Rajawali Botak"
+              class="animal-image"
+            />
+            <div class="animal-info">
+              <span class="animal-tag">Burung Pemangsa</span>
+              <h3>Bald Eagle</h3>
+              <p class="animal-subtitle">
+                Haliaeetus leucocephalus - Simbol Amerika
+              </p>
+              <p class="animal-habitat">Habitat: Dekat Perairan</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="quiz-section">
+        <div class="quiz-intro">
+          <h2>Uji Otakmu Tentang Dunia Hewan!</h2>
+          <p>Daratan, Udara, atau Lautan — seberapa jago kamu?</p>
+          <a href="quiz.html" class="btn-quiz">Mulai Kuis Sekarang!</a>
+        </div>
+      </section>
+
+      <footer>
+        <h2>WildLearn</h2>
+        <p>Belajar, Jelajahi, dan Lestarikan Alam Bersama</p>
+        <p style="margin-top: 2rem; opacity: 0.7">
+          © 2025 WildLearn. Semua hak dilindungi.
+        </p>
+      </footer>
+    </div>
+
+    <!-- MODAL DETAIL -->
+    <div class="modal-overlay" id="animalModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <img id="modalImg" class="modal-image" src="" alt="" />
+          <div class="close-btn" id="closeModal">X</div>
+        </div>
+        <div class="modal-body">
+          <h2 id="modalTitle"></h2>
+          <div class="subtitle" id="modalSubtitle"></div>
+          <div id="modalDesc"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATA HEWAN UDARA -->
+    <script>
+      const birds = [
+        {
+          name: "Elang Emas",
+          sci: "Aquila chrysaetos - Penguasa Langit",
+          habitat: "Pegunungan & Lembah",
+          img: "https://images.unsplash.com/photo-1622545482563-ebd4ec7aab5b?auto=format&fit=crop&w=800&q=80",
+          desc: `<p>Elang emas adalah salah satu burung pemangsa terkuat dengan penglihatan 8x lebih tajam dari manusia.</p>
+             <ul><li>Rentang sayap hingga 2,3 meter</li><li>Bisa menukik hingga 320 km/jam</li><li>Status: Tidak Terancam</li></ul>`,
+        },
+        {
+          name: "Macaw Biru",
+          sci: "Ara ararauna - Sang Penuh Warna",
+          habitat: "Hutan Hujan Tropis",
+          img: "https://images.unsplash.com/photo-1618102292821-ad0f30bb52a6?auto=format&fit=crop&w=800&q=80",
+          desc: `<p>Burung beo terbesar di dunia dengan warna biru-kuning yang mencolok.</p>
+             <ul><li>Umur hingga 80 tahun di penangkaran</li><li>Hanya punya satu pasangan seumur hidup</li><li>Status: Terancam Punah</li></ul>`,
+        },
+        {
+          name: "Burung Hantu",
+          sci: "Strigidae - Pemburu Malam",
+          habitat: "Hutan & Padang Rumput",
+          img: "https://images.unsplash.com/photo-1553264701-d138db4fd5d4?auto=format&fit=crop&w=800&q=60",
+          desc: `<p>Memiliki 270° putaran kepala dan pendengaran super sensitif.</p>
+             <ul><li>Ada lebih dari 200 spesies</li><li>Terbang tanpa suara karena bulu khusus</li></ul>`,
+        },
+        {
+          name: "Kolibri",
+          sci: "Trochilidae - Permata Terbang",
+          habitat: "Taman & Hutan",
+          img: "https://images.unsplash.com/photo-1520638023360-6def43369781?auto=format&fit=crop&w=800&q=80",
+          desc: `<p>Burung terkecil di dunia, bisa terbang mundur dan melayang.</p>
+             <ul><li>Detak jantung hingga 1.260 kali/menit</li><li>Makan 2x berat tubuhnya per hari</li></ul>`,
+        },
+        {
+          name: "Kelelawar Buah",
+          sci: "Pteropodidae - Penyebar Benih",
+          habitat: "Gua & Hutan",
+          img: "https://images.unsplash.com/photo-1572610865009-ac1ddf0189f5?auto=format&fit=crop&w=800&q=80",
+          desc: `<p>Satu-satunya mamalia yang benar-benar bisa terbang.</p>
+             <ul><li>Memakan buah & menyebarkan benih hutan</li><li>Beberapa spesies rentang sayap >1,5m</li></ul>`,
+        },
+        {
+          name: "Rajawali Botak",
+          sci: "Haliaeetus leucocephalus - Simbol Amerika",
+          habitat: "Dekat Perairan",
+          img: "https://images.unsplash.com/photo-1628703117067-fb7c9c20946e?auto=format&fit=crop&w=800&q=80",
+          desc: `<p>Simbol nasional Amerika Serikat.</p>
+             <ul><li>Rentang sayap hingga 2,4 meter</li><li>Bisa membawa ikan 4x berat tubuhnya</li><li>Status: Pulih dari hampir punah</li></ul>`,
+        },
+      ];
+
+      document.querySelectorAll(".animal-card").forEach((card, i) => {
+        card.addEventListener("click", () => {
+          const b = birds[i];
+          document.getElementById("modalImg").src = b.img;
+          document.getElementById("modalTitle").textContent = b.name;
+          document.getElementById("modalSubtitle").textContent =
+            b.sci + " • " + b.habitat;
+          document.getElementById("modalDesc").innerHTML = b.desc;
+          document.getElementById("animalModal").classList.add("show");
+          document.body.style.overflow = "hidden";
+        });
+      });
+
+      document.getElementById("closeModal").onclick = closeModal;
+      document.getElementById("animalModal").onclick = (e) => {
+        if (e.target === document.getElementById("animalModal")) closeModal();
+      };
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeModal();
+      });
+      function closeModal() {
+        document.getElementById("animalModal").classList.remove("show");
+        document.body.style.overflow = "auto";
+      }
+    </script>
+
+    <!-- SCRIPT UTAMA (loading + navbar + menu) -->
+    <script>
+      window.addEventListener("load", () => {
+        setTimeout(() => {
+          document.getElementById("skyAnimation").classList.add("fade-out");
+          document.getElementById("navbar").classList.add("show");
+          document.getElementById("mainContent").classList.add("show");
+          document.body.style.overflow = "auto";
+        }, 3000);
+      });
+      window.addEventListener("scroll", () => {
+        document
+          .getElementById("navbar")
+          .classList.toggle("scrolled", window.scrollY > 100);
+      });
+
+      const menuToggle = document.getElementById("menuToggle"),
+        navLinks = document.getElementById("navLinks");
+      menuToggle.addEventListener("click", () => {
+        navLinks.classList.toggle("active");
+        const open = navLinks.classList.contains("active");
+        menuToggle.textContent = open ? "✕" : "☰";
+        document.body.style.overflow = open ? "hidden" : "auto";
+      });
+      document.querySelectorAll(".nav-links a").forEach((l) =>
+        l.addEventListener("click", () => {
+          if (navLinks.classList.contains("active")) {
+            navLinks.classList.remove("active");
+            menuToggle.textContent = "☰";
+            document.body.style.overflow = "auto";
+          }
+        })
+      );
+    </script>
+  </body>
+</html>

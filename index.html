@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nature Intuition</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Poppins", sans-serif;
+        height: 100vh;
+        background: linear-gradient(rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.78)),
+          url("index img/index2.jpg") center/cover no-repeat fixed;
+        color: white;
+        overflow-x: hidden;
+      }
+
+      /* NAVBAR (disamain sama page lain) */
+      .navbar {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        padding: 1.8rem 7%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000;
+        transition: all 0.35s ease;
+      }
+      .navbar.scrolled {
+        background: rgba(255, 255, 255, 0.97);
+        backdrop-filter: blur(12px);
+        padding: 1.2rem 7%;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+      }
+      .logo {
+        font-size: 2rem;
+        font-weight: 800;
+        color: white;
+        letter-spacing: -1px;
+      }
+      .navbar.scrolled .logo {
+        color: #111;
+      }
+      .logo span {
+        color: #00d4aa;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 2.5rem;
+      }
+      .nav-links a {
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+        font-size: 1.05rem;
+        position: relative;
+        transition: 0.3s;
+      }
+      .navbar.scrolled .nav-links a {
+        color: #111;
+      }
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        bottom: -6px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: #00d4aa;
+        transition: 0.3s;
+      }
+      .nav-links a:hover::after {
+        width: 100%;
+      }
+      .nav-links a:hover {
+        color: #00d4aa;
+      }
+
+      /* HAMBURGER BUTTON */
+      .menu-toggle {
+        display: none;
+        color: white;
+        font-size: 2.2rem;
+        cursor: pointer;
+        z-index: 1001;
+        transition: 0.3s;
+      }
+      .navbar.scrolled .menu-toggle {
+        color: #111;
+      }
+
+      /* HERO */
+      .hero {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 0 20px;
+      }
+      .hero .title {
+        font-size: 5.5rem;
+        font-weight: 800;
+        letter-spacing: -2px;
+        text-shadow: 4px 4px 25px rgba(0, 0, 0, 0.9);
+        margin-bottom: 1.5rem;
+      }
+      .hero .tagline {
+        font-size: 1.8rem;
+        font-weight: 300;
+        max-width: 900px;
+        margin-bottom: 3rem;
+        opacity: 0.95;
+        line-height: 1.5;
+        text-shadow: 2px 2px 12px rgba(0, 0, 0, 0.8);
+      }
+
+      .hero-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+      }
+
+      .enter-btn {
+        background: white;
+        color: #111;
+        padding: 1.6rem 5rem;
+        font-size: 1.7rem;
+        font-weight: 700;
+        border-radius: 60px;
+        cursor: pointer;
+        transition: 0.35s;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+        text-decoration: none;
+        display: inline-block;
+        border: none;
+      }
+      .enter-btn:hover {
+        transform: translateY(-10px) scale(1.07);
+      }
+
+      /* BUBBLE BUTTON ARTIKEL */
+      .enter-btn.secondary {
+        background: transparent;
+        color: #ffffff;
+        border: 2px solid rgba(255, 255, 255, 0.9);
+        box-shadow: none;
+        padding: 1.4rem 3.8rem;
+        font-size: 1.4rem;
+      }
+      .enter-btn.secondary:hover {
+        background: rgba(0, 0, 0, 0.15);
+        transform: translateY(-6px) scale(1.04);
+      }
+
+      /* CHAT WIDGET */
+      #chatWidget {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        z-index: 9999;
+      }
+      #chatToggle {
+        width: 60px;
+        height: 60px;
+        background: #00d4aa;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 10px 25px rgba(0, 212, 170, 0.5);
+        transition: 0.3s;
+      }
+      #chatToggle:hover {
+        transform: scale(1.1);
+      }
+      #chatBox {
+        position: absolute;
+        bottom: 80px;
+        left: 0;
+        width: 340px;
+        height: 480px;
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        display: none;
+        flex-direction: column;
+        transform-origin: bottom left;
+        transition: 0.4s;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+      }
+      #chatBox.open {
+        display: flex;
+        transform: scale(1);
+      }
+      .chat-header {
+        background: #00d4aa;
+        color: white;
+        padding: 1rem;
+        text-align: center;
+        font-weight: 600;
+      }
+      .chat-messages {
+        flex: 1;
+        padding: 1rem;
+        background: #f7f7f7;
+        overflow-y: auto;
+      }
+      .msg {
+        margin-bottom: 12px;
+        display: flex;
+      }
+      .msg.user {
+        justify-content: flex-end;
+      }
+      .bubble {
+        max-width: 80%;
+        padding: 8px 13px;
+        border-radius: 18px;
+        font-size: 0.82rem;
+        line-height: 1.35;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .msg.bot .bubble {
+        background: #00d4aa;
+        color: white;
+      }
+      .msg.user .bubble {
+        background: #333;
+        color: white;
+      }
+      .typing span {
+        width: 8px;
+        height: 8px;
+        background: white;
+        border-radius: 50%;
+        margin: 0 3px;
+        animation: typing 1.2s infinite;
+      }
+      .typing span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .typing span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      @keyframes typing {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-6px);
+        }
+      }
+      .chat-input {
+        padding: 1rem;
+        display: flex;
+        gap: 10px;
+        border-top: 1px solid #eee;
+        background: white;
+      }
+      .chat-input input {
+        flex: 1;
+        padding: 12px 16px;
+        border-radius: 30px;
+        border: 1px solid #ddd;
+        outline: none;
+      }
+      .chat-input button {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: #00d4aa;
+        border: none;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      /* =========================
+         RESPONSIVE – MOBILE
+         ========================= */
+      @media (max-width: 768px) {
+        body {
+          background-attachment: scroll;
+          background-position: center;
+        }
+
+        .navbar {
+          padding: 1rem 1.25rem;
+          background: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.9),
+            rgba(0, 0, 0, 0.3)
+          );
+        }
+        .logo {
+          font-size: 1.5rem;
+        }
+
+        .menu-toggle {
+          display: block;
+          font-size: 2rem;
+          padding: 0.2rem 0.4rem;
+        }
+
+        /* Fullscreen nav overlay */
+        .nav-links {
+          position: fixed;
+          top: 0;
+          right: 0;
+          width: 100%;
+          height: 100vh;
+          background: rgba(0, 0, 0, 0.95);
+          backdrop-filter: blur(16px);
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          gap: 1.8rem;
+          transform: translateX(100%);
+          transition: transform 0.45s cubic-bezier(0.77, 0, 0.18, 1);
+          z-index: 999;
+        }
+        .nav-links.active {
+          transform: translateX(0);
+        }
+        .nav-links a {
+          font-size: 1.6rem;
+          margin: 0;
+          color: white !important;
+        }
+        .nav-links a::after {
+          background: #00d4aa;
+        }
+
+        /* Hero content */
+        .hero {
+          padding: 0 1.5rem;
+          align-items: flex-start;
+          text-align: left;
+        }
+        .hero .title {
+          font-size: 2.6rem;
+          line-height: 1.2;
+          margin-bottom: 1rem;
+        }
+        .hero .tagline {
+          font-size: 1rem;
+          max-width: 100%;
+          margin-bottom: 1.8rem;
+        }
+
+        .hero-buttons {
+          width: 100%;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 0.8rem;
+        }
+
+        .enter-btn,
+        .enter-btn.secondary {
+          width: 100%;
+          text-align: center;
+          padding: 1rem 1.25rem;
+          font-size: 1.1rem;
+          border-radius: 999px;
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+        }
+        .enter-btn:hover,
+        .enter-btn.secondary:hover {
+          transform: translateY(-4px) scale(1.02);
+        }
+
+        /* Chat widget: pindah ke kanan bawah biar nggak ganggu jempol */
+        #chatWidget {
+          bottom: 16px;
+          left: auto;
+          right: 16px;
+        }
+        #chatToggle {
+          width: 54px;
+          height: 54px;
+        }
+        #chatBox {
+          left: auto;
+          right: 0;
+          width: min(320px, 88vw);
+          height: 60vh;
+        }
+      }
+
+      /* Ekstra kecil (HP jadul / layar mini) */
+      @media (max-width: 480px) {
+        .hero {
+          padding-top: 4.5rem;
+        }
+        .hero .title {
+          font-size: 2.2rem;
+        }
+        .hero .tagline {
+          font-size: 0.95rem;
+        }
+        .navbar {
+          padding: 0.9rem 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+      <div class="logo">Nature<span>Intuition</span></div>
+      <div class="nav-links" id="navLinks">
+        <a href="masuk.html">Home</a>
+        <a href="3in1.html">Experience</a>
+        <a href="artikel.html">Artikel</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="menu-toggle" id="menuToggle">☰</div>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero">
+      <h1 class="title">Nature Intuition</h1>
+      <p class="tagline">
+        Platform edukasi yang membantu kamu memahami alam—dari darat, laut,
+        hingga langit—melalui penjelasan yang jelas dan mudah dipahami.
+      </p>
+      <div class="hero-buttons">
+        <a href="masuk.html" class="enter-btn">Masuk ke Dalam</a>
+        <a href="artikel.html" class="enter-btn secondary">Baca Artikel</a>
+      </div>
+    </div>
+
+    <!-- CHAT WIDGET -->
+    <div id="chatWidget">
+      <div id="chatToggle" onclick="toggleChat()">
+        <svg viewBox="0 0 24 24" width="32" fill="white">
+          <path
+            d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"
+          />
+        </svg>
+      </div>
+      <div id="chatBox">
+        <div class="chat-header">Nature Intuition Assistant</div>
+        <div class="chat-messages" id="chatMessages">
+          <div class="msg bot">
+            <div class="bubble">Halo! Ada yang bisa aku bantu hari ini?</div>
+          </div>
+        </div>
+        <div class="chat-input">
+          <input id="pesan" placeholder="Ketik pesan..." autocomplete="off" />
+          <button id="kirimBtn">
+            <svg viewBox="0 0 24 24" width="20" fill="white">
+              <path d="M2 21l21-9-21-9v7l15 2-15 2z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Navbar scroll effect
+      window.addEventListener("scroll", () => {
+        document
+          .getElementById("navbar")
+          .classList.toggle("scrolled", window.scrollY > 100);
+      });
+
+      // Hamburger Menu Toggle
+      const menuToggle = document.getElementById("menuToggle");
+      const navLinks = document.getElementById("navLinks");
+
+      menuToggle.addEventListener("click", () => {
+        navLinks.classList.toggle("active");
+        const open = navLinks.classList.contains("active");
+        menuToggle.textContent = open ? "✕" : "☰";
+        document.body.style.overflow = open ? "hidden" : "auto";
+      });
+
+      // Tutup menu saat link diklik (mobile)
+      navLinks.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+          if (navLinks.classList.contains("active")) {
+            navLinks.classList.remove("active");
+            menuToggle.textContent = "☰";
+            document.body.style.overflow = "auto";
+          }
+        });
+      });
+
+      // Chat Widget
+      function toggleChat() {
+        document.getElementById("chatBox").classList.toggle("open");
+      }
+
+      // Chatbot Logic
+      const url = "https://hellokitoy.app.n8n.cloud/webhook-test/chatbot";
+      const chatBox = document.getElementById("chatMessages");
+      const input = document.getElementById("pesan");
+      const sendBtn = document.getElementById("kirimBtn");
+
+      function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      function tambahPesan(teks, dari) {
+        const msg = document.createElement("div");
+        msg.className = `msg ${dari}`;
+        msg.innerHTML =
+          dari === "user"
+            ? `<div class="bubble">${escapeHtml(teks)}</div>`
+            : `<div class="bubble">${teks}</div>`;
+        chatBox.appendChild(msg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+
+      function showTyping() {
+        const t = document.createElement("div");
+        t.id = "typing";
+        t.className = "msg bot";
+        t.innerHTML = `<div class="bubble typing"><span></span><span></span><span></span></div>`;
+        chatBox.appendChild(t);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+
+      function hideTyping() {
+        const t = document.getElementById("typing");
+        if (t) t.remove();
+      }
+
+      async function kirim() {
+        const teks = input.value.trim();
+        if (!teks) return;
+        tambahPesan(teks, "user");
+        input.value = "";
+        sendBtn.disabled = true;
+        showTyping();
+        try {
+          const res = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: teks }),
+          });
+          hideTyping();
+          const raw = await res.text();
+          let balasan = raw;
+          try {
+            const data = JSON.parse(raw);
+            balasan = data.reply || data.response || data.output || raw;
+          } catch {}
+          tambahPesan(balasan, "bot");
+        } catch (err) {
+          hideTyping();
+          tambahPesan("Koneksi gagal!", "bot");
+        }
+        sendBtn.disabled = false;
+        input.focus();
+      }
+
+      sendBtn.addEventListener("click", kirim);
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") kirim();
+      });
+    </script>
+  </body>
+</html>

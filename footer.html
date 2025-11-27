@@ -1,0 +1,173 @@
+<!-- ========== WILDLEARN MODERN FOOTER ========== -->
+<style>
+  .wl-footer {
+    margin-top: 80px;
+    padding: 24px 7% 20px;
+    background: radial-gradient(
+      circle at top left,
+      #042045,
+      #021324 55%,
+      #010916
+    );
+    border-top: 1px solid rgba(148, 163, 184, 0.35);
+    color: #e5f2ff;
+    font-family: "Poppins", sans-serif;
+  }
+
+  .wl-footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  /* Brand kiri */
+  .wl-footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .wl-footer-logo {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+
+  .wl-footer-logo span {
+    color: #25c4ff;
+  }
+
+  .wl-footer-sub {
+    font-size: 0.8rem;
+    opacity: 0.9;
+  }
+
+  /* Nav tengah */
+  .wl-footer-nav {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.85rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .wl-footer-nav a {
+    text-decoration: none;
+    color: #cddaf5;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    transition: 0.2s ease;
+    font-weight: 500;
+  }
+
+  .wl-footer-nav a:hover {
+    border-color: rgba(148, 163, 184, 0.5);
+    background: rgba(15, 118, 178, 0.25);
+    color: #e5f2ff;
+  }
+
+  /* Sosmed kanan */
+  .wl-footer-social {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .wl-footer-social-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.7;
+  }
+
+  .wl-footer-social-links {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .wl-footer-social-links a {
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    text-decoration: none;
+    color: #e5f2ff;
+    transition: 0.18s ease;
+  }
+
+  .wl-footer-social-links a:hover {
+    transform: translateY(-2px);
+    border-color: #25c4ff;
+    box-shadow: 0 4px 14px rgba(37, 196, 255, 0.3);
+  }
+
+  /* Bottom text */
+  .wl-footer-bottom {
+    margin-top: 10px;
+    font-size: 0.75rem;
+    opacity: 0.7;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 800px) {
+    .wl-footer {
+      padding-inline: 6%;
+    }
+
+    .wl-footer-inner {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .wl-footer-nav {
+      justify-content: flex-start;
+    }
+
+    .wl-footer-bottom {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
+
+<footer class="wl-footer" id="tentang">
+  <div class="wl-footer-inner">
+    <div class="wl-footer-brand">
+      <div class="wl-footer-logo">Wild<span>Learn</span></div>
+      <div class="wl-footer-sub">
+        Belajar hewan dengan cara yang santai tapi niat.
+      </div>
+    </div>
+
+    <nav class="wl-footer-nav">
+      <a href="#home">Home</a>
+      <a href="#kategori">Kategori</a>
+      <a href="#hewan">Hewan Laut</a>
+      <a href="quiz.html">Kuis</a>
+    </nav>
+
+    <div class="wl-footer-social">
+      <span class="wl-footer-social-label">Social</span>
+      <div class="wl-footer-social-links">
+        <a href="#" aria-label="Instagram">IG</a>
+        <a href="#" aria-label="TikTok">TT</a>
+        <a href="#" aria-label="YouTube">YT</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wl-footer-bottom">
+    <span>© 2024 WildLearn.</span>
+    <span>Made for kids, approved by coder yang begadang.</span>
+  </div>
+</footer>

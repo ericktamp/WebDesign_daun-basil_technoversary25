@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Deep Sea</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        overflow-x: hidden;
+        background: linear-gradient(
+          to bottom,
+          #87ceeb 0%,
+          #4a90e2 5%,
+          #2e5c8a 15%,
+          #1a3a52 25%,
+          #0f2027 40%,
+          #050810 60%,
+          #000000 100%
+        );
+      }
+
+      .ocean-container {
+        position: relative;
+        width: 100%;
+        min-height: 20000px;
+      }
+
+      .depth-indicator {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        padding: 15px 25px;
+        border-radius: 10px;
+        color: white;
+        font-size: 24px;
+        font-weight: 600;
+        z-index: 1000;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .depth-indicator span {
+        font-size: 14px;
+        opacity: 0.8;
+        display: block;
+        margin-top: 5px;
+      }
+
+      .start-section {
+        position: relative;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: white;
+      }
+
+      .start-section h1 {
+        font-size: 72px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .start-section p {
+        font-size: 24px;
+        opacity: 0.9;
+        margin-bottom: 40px;
+      }
+
+      .scroll-hint {
+        position: absolute;
+        bottom: 40px;
+        font-size: 16px;
+        opacity: 0.7;
+        animation: bounce 2s infinite;
+      }
+
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .creature {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 600px;
+        color: white;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+
+      .creature.visible {
+        opacity: 1;
+      }
+
+      .creature-content {
+        background: transparent;
+        padding: 20px;
+      }
+
+      .creature h2 {
+        font-size: 28px;
+        margin-bottom: 15px;
+        color: #fff;
+        font-weight: 600;
+      }
+
+      .creature-icon {
+        font-size: 80px;
+        margin-bottom: 20px;
+        display: block;
+        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+      }
+
+      .creature p {
+        font-size: 16px;
+        line-height: 1.6;
+        opacity: 0.9;
+      }
+
+      .zone-marker {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        color: white;
+        font-size: 48px;
+        font-weight: 700;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+
+      .zone-marker.visible {
+        opacity: 0.3;
+      }
+
+      .fact-box {
+        position: absolute;
+        right: 100px;
+        width: 400px;
+        background: transparent;
+        padding: 20px;
+        color: white;
+        font-size: 15px;
+        line-height: 1.8;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+
+      .fact-box strong {
+        font-size: 20px;
+        display: block;
+        margin-bottom: 10px;
+      }
+
+      .fact-box.visible {
+        opacity: 1;
+      }
+
+      .depth-line {
+        position: fixed;
+        left: 50px;
+        top: 0;
+        width: 2px;
+        height: 100vh;
+        background: rgba(255, 255, 255, 0.15);
+        z-index: 999;
+      }
+
+      .depth-marker {
+        position: absolute;
+        left: 50px;
+        width: 30px;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.3);
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+
+      .depth-marker.visible {
+        opacity: 1;
+      }
+
+      .depth-marker::after {
+        content: attr(data-depth);
+        position: absolute;
+        left: 40px;
+        top: -8px;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      @media (max-width: 768px) {
+        .creature {
+          width: 90%;
+        }
+
+        .fact-box {
+          right: 5%;
+          width: 90%;
+        }
+
+        .start-section h1 {
+          font-size: 48px;
+        }
+
+        .depth-indicator {
+          font-size: 18px;
+          padding: 10px 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="depth-line"></div>
+    <div class="depth-indicator">
+      <div id="currentDepth">0m</div>
+      <span>depth</span>
+    </div>
+
+    <div class="ocean-container">
+      <div class="start-section">
+        <h1>The Deep Sea</h1>
+        <p>Scroll to explore the ocean's depths</p>
+        <div class="scroll-hint">↓ Scroll Down ↓</div>
+      </div>
+
+      <!-- Surface Zone -->
+      <div class="creature" style="top: 1200px" data-depth="10">
+        <div class="creature-content">
+          <span class="creature-icon">🐠</span>
+          <h2>Clownfish</h2>
+          <p>
+            These colorful fish live among sea anemones in shallow coral reefs.
+            They have a special mucus coating that protects them from the
+            anemone's stinging tentacles.
+          </p>
+        </div>
+      </div>
+
+      <div class="creature" style="top: 1600px" data-depth="30">
+        <div class="creature-content">
+          <span class="creature-icon">🐢</span>
+          <h2>Sea Turtle</h2>
+          <p>
+            Sea turtles can hold their breath for hours and dive to depths of
+            over 1,000 meters. Leatherback sea turtles are the oldest sea turtle
+            species, dating back millions of years.
+          </p>
+        </div>
+      </div>
+
+      <div class="creature" style="top: 2000px" data-depth="50">
+        <div class="creature-content">
+          <span class="creature-icon">🦈</span>
+          <h2>Reef Shark</h2>
+          <p>
+            These agile predators patrol coral reefs, playing a crucial role in
+            maintaining the health of reef ecosystems by controlling prey
+            populations.
+          </p>
+        </div>
+      </div>
+
+      <!-- Twilight Zone -->
+      <div class="zone-marker" style="top: 2400px" data-depth="100">
+        THE TWILIGHT ZONE
+      </div>
+
+      <div class="creature" style="top: 2800px" data-depth="150">
+        <div class="creature-content">
+          <span class="creature-icon">🐋</span>
+          <h2>Sperm Whale</h2>
+          <p>
+            The deepest diving whale species. They can dive to depths of over
+            2,000 meters and hold their breath for up to 90 minutes while
+            hunting giant squid.
+          </p>
+        </div>
+      </div>
+
+      <div class="fact-box" style="top: 3200px" data-depth="200">
+        <strong>🌅 Sunlight Zone Ends Here</strong>
+        Below 200 meters, sunlight can no longer penetrate the water. This is
+        where the ocean gets truly dark and mysterious.
+      </div>
+
+      <div class="creature" style="top: 3600px" data-depth="250">
+        <div class="creature-content">
+          <span class="creature-icon">🦀</span>
+          <h2>Japanese Spider Crab</h2>
+          <p>
+            The largest known crab species with a leg span that can reach up to
+            3.8 meters. Despite their size, they move slowly along the ocean
+            floor.
+          </p>
+        </div>
+      </div>
+
+      <!-- Midnight Zone -->
+      <div class="zone-marker" style="top: 4200px" data-depth="400">
+        THE MIDNIGHT ZONE
+      </div>
+
+      <div class="fact-box" style="top: 4600px" data-depth="500">
+        <strong>💡 Bioluminescence</strong>
+        Many deep-sea creatures create their own light through bioluminescence.
+        This helps them attract prey, find mates, or confuse predators in the
+        eternal darkness.
+      </div>
+
+      <div class="creature" style="top: 5000px" data-depth="600">
+        <div class="creature-content">
+          <span class="creature-icon">🦑</span>
+          <h2>Giant Squid</h2>
+          <p>
+            These elusive creatures can grow up to 13 meters long. They have the
+            largest eyes in the animal kingdom, up to 30cm in diameter, perfect
+            for detecting prey in the deep darkness.
+          </p>
+        </div>
+      </div>
+
+      <div class="creature" style="top: 5600px" data-depth="750">
+        <div class="creature-content">
+          <span class="creature-icon">🐙</span>
+          <h2>Vampire Squid</h2>
+          <p>
+            Despite its frightening name, the vampire squid is harmless. It
+            feeds on marine snow - organic material that falls from shallower
+            waters. Its cloak-like webbing gives it a mysterious appearance.
+          </p>
+        </div>
+      </div>
+
+      <div class="creature" style="top: 6200px" data-depth="900">
+        <div class="creature-content">
+          <span class="creature-icon">🎣</span>
+          <h2>Anglerfish</h2>
+          <p>
+            Female anglerfish use a bioluminescent lure to attract prey in the
+            darkness. Males are much smaller and actually fuse their bodies to
+            females, becoming parasitic partners.
+          </p>
+        </div>
+      </div>
+
+      <div class="creature" style="top: 6800px" data-depth="1000">
+        <div class="creature-content">
+          <span class="creature-icon">🐟</span>
+          <h2>Barreleye Fish</h2>
+          <p>
+            This bizarre fish has a completely transparent head! Its tubular
+            eyes can rotate to look upward through its clear dome, helping it
+            spot prey silhouetted against the faint light above.
+          </p>
+        </div>
+      </div>
+
+      <!-- Abyssal Zone -->
+      <div class="zone-marker" style="top: 7400px" data-depth="1200">
+        THE ABYSSAL ZONE
+      </div>
+
+      <div class="fact-box" style="top: 7800px" data-depth="1400">
+        <strong>❄️ Near Freezing</strong>
+        The temperature here hovers just above freezing at around 2-3°C. The
+        pressure is crushing - equivalent to having 50 jumbo jets stacked on top
+        of you.
+      </div>
+
+      <div class="creature" style="top: 8400px" data-depth="1600">
+        <div class="creature-content">
+          <span class="creature-icon">🦈</span>
+          <h2>Goblin Shark</h2>
+          <p>
+            Known as a "living fossil," goblin sharks have existed for 125
+            million years. Their extendable jaws can shoot forward to catch prey
+            in a fraction of a second.
+          </p>
+        </div>
+      </div>
+
+      <div class="creature" style="top: 9000px" data-depth="1850">
+        <div class="creature-content">
+          <span class="creature-icon">🦐</span>
+          <h2>Giant Isopod</h2>
+          <p>
+            These massive relatives of the pill bug can grow up to 50cm long.
+            One specimen in captivity survived for 5 years without eating,
+            showing how adapted they are to the food-scarce deep sea.
+          </p>
+        </div>
+      </div>
+
+      <div class="creature" style="top: 9600px" data-depth="2000">
+        <div class="creature-content">
+          <span class="creature-icon">🦭</span>
+          <h2>Elephant Seal</h2>
+          <p>
+            Incredibly, elephant seals can dive to these depths, holding their
+            breath for up to 2 hours while hunting for fish and squid. They're
+            among the deepest diving mammals.
+          </p>
+        </div>
+      </div>
+
+      <div class="creature" style="top: 10400px" data-depth="2400">
+        <div class="creature-content">
+          <span class="creature-icon">🦑</span>
+          <h2>Colossal Squid</h2>
+          <p>
+            Even larger than the giant squid, colossal squid can reach 10 meters
+            in length and weigh up to 700kg. They have rotating hooks on their
+            tentacles for gripping prey.
+          </p>
+        </div>
+      </div>
+
+      <div class="fact-box" style="top: 11000px" data-depth="2800">
+        <strong>🌋 Hydrothermal Vents</strong>
+        At these depths, volcanic vents spew superheated water rich in minerals.
+        Despite extreme conditions, specialized life thrives around these oases.
+      </div>
+
+      <div class="creature" style="top: 11600px" data-depth="3000">
+        <div class="creature-content">
+          <span class="creature-icon">🦀</span>
+          <h2>Yeti Crab</h2>
+          <p>
+            These pale crabs live near hydrothermal vents. Their hairy claws are
+            covered in bacteria that they cultivate and eat, creating their own
+            food source.
+          </p>
+        </div>
+      </div>
+
+      <div class="creature" style="top: 12400px" data-depth="3400">
+        <div class="creature-content">
+          <span class="creature-icon">🐌</span>
+          <h2>Scaly-Foot Snail</h2>
+          <p>
+            The only known animal with iron armor! This snail builds its shell
+            from iron sulfide and has iron plates on its foot, protecting it
+            from predators.
+          </p>
+        </div>
+      </div>
+
+      <div class="fact-box" style="top: 13000px" data-depth="3800">
+        <strong>🚢 RMS Titanic</strong>
+        On April 14th, 1912, the Titanic sank to its final resting place at this
+        depth. The wreck was discovered in 1985, nearly 73 years after it sank.
+      </div>
+
+      <!-- Hadal Zone -->
+      <div class="zone-marker" style="top: 14000px" data-depth="6000">
+        THE HADAL ZONE
+      </div>
+
+      <div class="creature" style="top: 14800px" data-depth="7000">
+        <div class="creature-content">
+          <span class="creature-icon">🐟</span>
+          <h2>Hadal Snailfish</h2>
+          <p>
+            These ghostly white fish hold the record for the deepest living fish
+            ever filmed. They survive at depths where the pressure would crush
+            most life.
+          </p>
+        </div>
+      </div>
+
+      <div class="fact-box" style="top: 15600px" data-depth="8000">
+        <strong>⚡ Extreme Pressure</strong>
+        The pressure here is over 800 times atmospheric pressure at sea level.
+        It's like having 8 tons pressing down on every square inch of your body.
+      </div>
+
+      <div class="creature" style="top: 16400px" data-depth="9000">
+        <div class="creature-content">
+          <span class="creature-icon">🦐</span>
+          <h2>Amphipods</h2>
+          <p>
+            These tiny shrimp-like creatures are among the few animals that can
+            survive at these extreme depths. Some species can grow to enormous
+            sizes in the deep sea.
+          </p>
+        </div>
+      </div>
+
+      <div class="fact-box" style="top: 17200px" data-depth="10000">
+        <strong>🏔️ Mount Everest</strong>
+        If you placed Mount Everest at the bottom of the Mariana Trench, its
+        peak would still be over 2,000 meters underwater.
+      </div>
+
+      <div class="zone-marker" style="top: 18000px" data-depth="10927">
+        CHALLENGER DEEP
+      </div>
+
+      <div class="fact-box" style="top: 18600px" data-depth="10927">
+        <strong>🌊 The Deepest Point on Earth</strong>
+        This is the bottom of the Mariana Trench - the deepest known point in
+        Earth's oceans. Only three people have ever been here: Jacques Piccard,
+        Don Walsh (1960), and James Cameron (2012). It took over 4 hours to
+        reach the bottom.
+      </div>
+
+      <div class="creature" style="top: 19200px" data-depth="10927">
+        <div class="creature-content">
+          <span class="creature-icon">🎉</span>
+          <h2>You've Reached the Bottom!</h2>
+          <p>
+            Congratulations! You've descended 10,927 meters to the deepest point
+            in the ocean. More people have been to space than have visited this
+            place. The ocean remains one of Earth's final frontiers.
+          </p>
+        </div>
+      </div>
+
+      <!-- Depth markers (garis kiri) -->
+      <div class="depth-marker" style="top: 1200px" data-depth="10m"></div>
+      <div class="depth-marker" style="top: 2000px" data-depth="50m"></div>
+      <div class="depth-marker" style="top: 3200px" data-depth="200m"></div>
+      <div class="depth-marker" style="top: 5000px" data-depth="600m"></div>
+      <div class="depth-marker" style="top: 7000px" data-depth="1000m"></div>
+      <div class="depth-marker" style="top: 10000px" data-depth="2000m"></div>
+      <div class="depth-marker" style="top: 13000px" data-depth="3800m"></div>
+      <div class="depth-marker" style="top: 16000px" data-depth="7000m"></div>
+      <div class="depth-marker" style="top: 19000px" data-depth="10927m"></div>
+    </div>
+
+    <script>
+      const depthDisplay = document.getElementById("currentDepth");
+      const dynamicElements = document.querySelectorAll(
+        ".creature, .fact-box, .zone-marker, .depth-marker"
+      );
+
+      let keyPoints = [];
+      const MAX_DEPTH = 10994; // Challenger Deep
+
+      function buildKeyPoints() {
+        keyPoints = [];
+        const depthEls = document.querySelectorAll(
+          ".creature[data-depth], .fact-box[data-depth], .zone-marker[data-depth]"
+        );
+
+        depthEls.forEach((el) => {
+          const d = Number(el.getAttribute("data-depth"));
+          if (!isNaN(d)) {
+            const rect = el.getBoundingClientRect();
+            const y = window.scrollY + rect.top; // posisi absolut
+            keyPoints.push({ y, d });
+          }
+        });
+
+        keyPoints.sort((a, b) => a.y - b.y);
+      }
+
+      function getInterpolatedDepth(scrollCenter) {
+        if (!keyPoints.length) return 0;
+
+        // Di atas elemen pertama: masih di permukaan → 0 m
+        if (scrollCenter <= keyPoints[0].y) return 0;
+
+        const last = keyPoints[keyPoints.length - 1];
+        if (scrollCenter >= last.y) return last.d;
+
+        for (let i = 0; i < keyPoints.length - 1; i++) {
+          const p1 = keyPoints[i];
+          const p2 = keyPoints[i + 1];
+          if (scrollCenter >= p1.y && scrollCenter <= p2.y) {
+            const ratio = (scrollCenter - p1.y) / (p2.y - p1.y);
+            return Math.round(p1.d + ratio * (p2.d - p1.d));
+          }
+        }
+        return last.d;
+      }
+
+      function updateDepth() {
+        const scrollCenter = window.scrollY + window.innerHeight / 2;
+        const depth = getInterpolatedDepth(scrollCenter);
+
+        depthDisplay.textContent = depth.toLocaleString() + "m";
+
+        const windowHeight = window.innerHeight;
+        dynamicElements.forEach((el) => {
+          const rect = el.getBoundingClientRect();
+          if (
+            rect.top < windowHeight * 0.75 &&
+            rect.bottom > windowHeight * 0.25
+          ) {
+            el.classList.add("visible");
+          } else {
+            el.classList.remove("visible");
+          }
+        });
+      }
+
+      window.addEventListener("scroll", updateDepth);
+      window.addEventListener("load", () => {
+        buildKeyPoints();
+        updateDepth();
+      });
+      window.addEventListener("resize", () => {
+        buildKeyPoints();
+        updateDepth();
+      });
+    </script>
+  </body>
+</html>

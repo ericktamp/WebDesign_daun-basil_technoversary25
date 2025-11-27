@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz IQ Hewan</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        min-height: 100vh;
+        overflow-x: hidden;
+        color: #f9fafb;
+        transition: background-image 0.5s ease, background-color 0.5s ease;
+        background-attachment: fixed;
+      }
+
+      /* THEME BACKGROUNDS */
+      body.theme-default {
+        background: linear-gradient(
+            rgba(5, 10, 25, 0.78),
+            rgba(10, 10, 35, 0.9)
+          ),
+          url("https://images.unsplash.com/photo-1546182990-dffeafbe841d?auto=format&fit=crop&w=1600&q=80")
+            center/cover no-repeat fixed;
+      }
+      body.theme-land {
+        background: linear-gradient(rgba(5, 20, 10, 0.8), rgba(5, 10, 5, 0.9)),
+          url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80")
+            center/cover no-repeat fixed;
+      }
+      body.theme-sea {
+        background: linear-gradient(rgba(0, 40, 70, 0.8), rgba(0, 20, 40, 0.9)),
+          url("https://images.unsplash.com/photo-1534921144462-0e7974f2f9c4?auto=format&fit=crop&w=1600&q=80")
+            center/cover no-repeat fixed;
+      }
+      body.theme-sky {
+        background: linear-gradient(rgba(8, 24, 68, 0.8), rgba(15, 23, 42, 0.9)),
+          url("https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1600&q=80")
+            center/cover no-repeat fixed;
+      }
+
+      /* LOADING */
+      .loading-screen {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        z-index: 9999;
+        transition: opacity 1s;
+      }
+      .loading-screen.fade-out {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .loading-text {
+        font-size: 2.5rem;
+        color: white;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        animation: pulse 1.5s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      /* BACK BUTTON */
+      .back-button {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: rgba(15, 23, 42, 0.85);
+        color: white;
+        padding: 10px 18px;
+        border-radius: 999px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        z-index: 9000;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        transition: 0.25s;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(148, 163, 184, 0.4);
+      }
+      .back-button:hover {
+        transform: translateY(-3px);
+        background: rgba(30, 64, 175, 0.95);
+      }
+
+      /* WRAPPER */
+      .quiz-container {
+        min-height: 100vh;
+        padding: 3rem 1.5rem;
+        display: none;
+      }
+      .quiz-container.active {
+        display: block;
+      }
+
+      .quiz-box {
+        max-width: 900px;
+        margin: 0 auto;
+        background: rgba(15, 23, 42, 0.9);
+        padding: 3rem 2.5rem;
+        border-radius: 28px;
+        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.6);
+        text-align: center;
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        backdrop-filter: blur(18px);
+      }
+
+      .quiz-box h1 {
+        font-size: 2.6rem;
+        margin-bottom: 1.2rem;
+        background: linear-gradient(135deg, #e0e7ff, #a5b4fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: 0.03em;
+      }
+
+      .quiz-box h2 {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #e5e7eb;
+      }
+
+      /* GRID PILIHAN */
+      .selection-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.6rem;
+        margin: 2.2rem 0 0.5rem;
+      }
+
+      .btn-select,
+      .btn-difficulty {
+        padding: 2rem 1.5rem;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: white;
+        border: none;
+        border-radius: 24px;
+        cursor: pointer;
+        transition: 0.25s;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+      }
+
+      .btn-select:hover,
+      .btn-difficulty:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 26px 55px rgba(0, 0, 0, 0.6);
+      }
+
+      .btn-land {
+        background: linear-gradient(135deg, #14532d, #22c55e);
+      }
+      .btn-sea {
+        background: linear-gradient(135deg, #075985, #22d3ee);
+      }
+      .btn-sky {
+        background: linear-gradient(135deg, #1d4ed8, #38bdf8);
+      }
+
+      .btn-easy {
+        background: linear-gradient(135deg, #166534, #22c55e);
+      }
+      .btn-medium {
+        background: linear-gradient(135deg, #854d0e, #facc15);
+        color: #111827;
+      }
+      .btn-hard {
+        background: linear-gradient(135deg, #991b1b, #f97373);
+      }
+
+      /* QUIZ PAGE */
+      .category-badge {
+        padding: 0.7rem 1.8rem;
+        border-radius: 999px;
+        font-weight: 700;
+        color: white;
+        display: inline-block;
+        font-size: 0.95rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .timer {
+        display: inline-block;
+        background: #111827;
+        color: #f9fafb;
+        padding: 0.6rem 1.4rem;
+        border-radius: 999px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 0.7rem;
+      }
+
+      .progress-bar {
+        height: 10px;
+        background: #111827;
+        border-radius: 999px;
+        overflow: hidden;
+        margin: 1rem 0 1.3rem;
+      }
+      .progress-fill {
+        height: 100%;
+        width: 0;
+        background: linear-gradient(90deg, #6366f1, #a855f7);
+        transition: width 0.35s;
+      }
+
+      .question-text {
+        font-size: 1.6rem;
+        margin: 1rem 0 1.4rem;
+        font-weight: 600;
+        line-height: 1.5;
+        color: #e5e7eb;
+      }
+
+      .answers-grid {
+        display: grid;
+        gap: 1rem;
+        margin-top: 0.5rem;
+      }
+
+      .answer-btn {
+        padding: 1.3rem 1.2rem;
+        text-align: left;
+        background: #020617;
+        border: 2px solid rgba(148, 163, 184, 0.6);
+        border-radius: 15px;
+        cursor: pointer;
+        transition: 0.2s;
+        font-weight: 600;
+        font-size: 1rem;
+        color: #e5e7eb;
+      }
+      .answer-btn:hover {
+        border-color: #6366f1;
+        transform: translateX(6px);
+        background: #020617;
+      }
+      .answer-btn.correct {
+        background: #14532d;
+        border-color: #22c55e;
+        color: #bbf7d0;
+      }
+      .answer-btn.wrong {
+        background: #7f1d1d;
+        border-color: #f97373;
+        color: #fee2e2;
+      }
+
+      /* HASIL */
+      .score-display {
+        font-size: 4.5rem;
+        font-weight: 800;
+        color: #a5b4fc;
+        margin: 1.5rem 0 0.5rem;
+      }
+
+      .animal-emoji {
+        font-size: 3.5rem;
+        margin: 1rem 0 0.5rem;
+      }
+
+      .btn-retry {
+        margin-top: 2rem;
+        padding: 1.3rem 3.5rem;
+        font-size: 1.2rem;
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        color: white;
+        border: none;
+        border-radius: 999px;
+        cursor: pointer;
+        font-weight: 700;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+        transition: 0.25s;
+      }
+      .btn-retry:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 768px) {
+        .quiz-container {
+          padding: 2.2rem 1.1rem;
+        }
+        .quiz-box {
+          padding: 2.1rem 1.6rem;
+          border-radius: 22px;
+        }
+        .quiz-box h1 {
+          font-size: 2.1rem;
+        }
+        .question-text {
+          font-size: 1.25rem;
+        }
+        .selection-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="theme-default">
+    <!-- LOADING -->
+    <div class="loading-screen" id="loadingScreen">
+      <div class="loading-text">Memuat IQ Hewan...</div>
+    </div>
+
+    <!-- TOMBOL KEMBALI -->
+    <div
+      id="backBtn"
+      class="back-button"
+      onclick="confirmExit()"
+      style="display: none"
+    >
+      ← Kembali
+    </div>
+
+    <!-- HALAMAN KATEGORI -->
+    <div class="quiz-container active" id="categoryPage">
+      <div class="quiz-box">
+        <h1>Quiz IQ Hewan</h1>
+        <h2>Pilih Habitat:</h2>
+        <div class="selection-grid">
+          <button class="btn-select btn-land" onclick="showDifficulty('land')">
+            Darat
+          </button>
+          <button class="btn-select btn-sea" onclick="showDifficulty('sea')">
+            Laut
+          </button>
+          <button class="btn-select btn-sky" onclick="showDifficulty('sky')">
+            Udara
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- HALAMAN KESULITAN -->
+    <div class="quiz-container" id="difficultyPage">
+      <div class="quiz-box">
+        <h1 id="difficultyTitle">Kategori: Darat</h1>
+        <h2>Pilih Tingkat Kesulitan:</h2>
+        <div class="selection-grid">
+          <button class="btn-difficulty btn-easy" onclick="startQuiz('easy')">
+            Mudah
+          </button>
+          <button
+            class="btn-difficulty btn-medium"
+            onclick="startQuiz('medium')"
+          >
+            Sedang
+          </button>
+          <button class="btn-difficulty btn-hard" onclick="startQuiz('hard')">
+            Sulit
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- HALAMAN QUIZ -->
+    <div class="quiz-container" id="quizPage">
+      <div class="quiz-box">
+        <div class="category-badge" id="categoryBadge"></div>
+        <div class="timer" id="timer">30</div>
+        <div
+          style="font-size: 1.05rem; margin: 0.4rem 0"
+          id="questionNumber"
+        ></div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="question-text" id="questionText"></div>
+        <div class="answers-grid" id="answersGrid"></div>
+      </div>
+    </div>
+
+    <!-- HALAMAN HASIL -->
+    <div class="quiz-container" id="resultPage">
+      <div class="quiz-box">
+        <h2>Hasil Uji IQ Kamu!</h2>
+        <div class="score-display" id="finalScore">0/10</div>
+        <div class="animal-emoji" id="animalEmoji"></div>
+        <div
+          id="animalDescription"
+          style="font-size: 1.1rem; line-height: 1.8; margin: 1.2rem 0"
+        ></div>
+        <button class="btn-retry" onclick="location.reload()">Coba Lagi</button>
+      </div>
+    </div>
+
+    <script>
+      // ================== DATA SOAL (45 SOAL) ==================
+      const quizDataAll = {
+        land: {
+          easy: [
+            {
+              q: "Hewan mana yang dikenal sangat cerdas dan bisa menggunakan alat sederhana di alam liar?",
+              a: ["Gorila", "Kambing", "Kelinci", "Kuda"],
+              c: 0,
+            },
+            {
+              q: "Hewan darat yang sering dilatih menjadi anjing pelacak karena kecerdasannya adalah...",
+              a: ["Anjing", "Kucing", "Sapi", "Kambing"],
+              c: 0,
+            },
+            {
+              q: "Primata yang sering dijadikan simbol kecerdasan di film dan penelitian adalah...",
+              a: ["Simpanse", "Harimau", "Panda", "Rusa"],
+              c: 0,
+            },
+            {
+              q: "Hewan darat yang bisa mengingat lokasi air dan rute migrasi dengan sangat baik adalah...",
+              a: ["Gajah", "Kelinci", "Ayam", "Bebek"],
+              c: 0,
+            },
+            {
+              q: "Hewan yang bisa dilatih untuk melakukan trik sederhana di sirkus karena daya ingatnya adalah...",
+              a: ["Anjing", "Domba", "Sapi", "Ayam"],
+              c: 0,
+            },
+          ],
+          medium: [
+            {
+              q: "Gajah dikenal memiliki kemampuan mengingat yang kuat. Bagian otak yang sangat berkembang pada gajah berkaitan dengan...",
+              a: [
+                "Memori dan emosi",
+                "Penglihatan malam",
+                "Pendengaran ultrasonik",
+                "Pengaturan suhu tubuh",
+              ],
+              c: 0,
+            },
+            {
+              q: "Rubah sering disebut licik karena...",
+              a: [
+                "Mampu mengubah strategi berburu sesuai situasi",
+                "Selalu berburu secara berkelompok",
+                "Berbulu tebal saat musim dingin",
+                "Tidak memiliki pemangsa alami",
+              ],
+              c: 0,
+            },
+            {
+              q: "Beberapa spesies monyet mampu mengenali dirinya sendiri di cermin. Ini menunjukkan kemampuan...",
+              a: [
+                "Kesadaran diri",
+                "Kecepatan berlari",
+                "Kemampuan berburu",
+                "Kemampuan kamuflase",
+              ],
+              c: 0,
+            },
+            {
+              q: "Anjing gembala (shepherd) sering digunakan untuk menggiring ternak karena...",
+              a: [
+                "Mampu memahami banyak perintah kompleks",
+                "Tubuhnya paling besar",
+                "Berbulu paling tebal",
+                "Tidak pernah lelah",
+              ],
+              c: 0,
+            },
+            {
+              q: "Hewan yang bisa mengingat wajah manusia yang pernah berbuat jahat padanya adalah...",
+              a: ["Gajah", "Kuda Nil", "Zebra", "Kerbau"],
+              c: 0,
+            },
+          ],
+          hard: [
+            {
+              q: "Penelitian menunjukkan bahwa babi memiliki IQ yang setara dengan...",
+              a: [
+                "Anjing dan simpanse muda",
+                "Ikan kecil",
+                "Burung pipit",
+                "Ayam kampung",
+              ],
+              c: 0,
+            },
+            {
+              q: "Beberapa spesies kuda dapat belajar membuka kunci pagar kandang. Perilaku ini menunjukkan...",
+              a: [
+                "Pemecahan masalah dan pembelajaran dari pengalaman",
+                "Refleks alami tanpa berpikir",
+                "Hanya peniruan tanpa pemahaman",
+                "Insting migrasi musiman",
+              ],
+              c: 0,
+            },
+            {
+              q: "Simpanse dalam eksperimen memori angka di layar mampu mengalahkan manusia dalam...",
+              a: [
+                "Mengingat urutan angka singkat dalam waktu yang sangat cepat",
+                "Menghafal buku tebal",
+                "Menerjemahkan bahasa manusia",
+                " Menggambar objek 3D",
+              ],
+              c: 0,
+            },
+            {
+              q: "Beberapa primata terlihat menggunakan batu untuk memecah kacang. Hal ini menunjukkan kemampuan...",
+              a: [
+                "Penggunaan alat dan perencanaan tindakan",
+                "Berenang jauh",
+                "Mendeteksi gempa bumi",
+                "Berjalan dua kaki permanen",
+              ],
+              c: 0,
+            },
+            {
+              q: "Eksperimen menunjukkan bahwa tikus di labirin bisa belajar mencari jalan tercepat. Konsep psikologi yang tampak di sini adalah...",
+              a: [
+                "Belajar spasial dan pembentukan peta kognitif",
+                "Refleks tanpa sadar",
+                "Hanya naluri bawaan",
+                "Migrasi musiman",
+              ],
+              c: 0,
+            },
+          ],
+        },
+        sea: {
+          easy: [
+            {
+              q: "Mamalia laut yang terkenal sangat cerdas dan sering tampil di pertunjukan adalah...",
+              a: ["Lumba-lumba", "Ikan Mas", "Gurita", "Ikan Pari"],
+              c: 0,
+            },
+            {
+              q: "Hewan laut yang memiliki delapan lengan dan dikenal sangat pintar berkamuflase adalah...",
+              a: ["Gurita", "Kepiting", "Ikan Badut", "Bintang Laut"],
+              c: 0,
+            },
+            {
+              q: "Paus pembunuh (orca) sering disebut sangat cerdas karena...",
+              a: [
+                "Berburu secara berkelompok dengan strategi",
+                "Mampu hidup di darat",
+                "Tidak pernah tidur",
+                "Tidak butuh oksigen",
+              ],
+              c: 0,
+            },
+            {
+              q: "Ikan yang terkenal tinggal di anemon dan muncul di film animasi populer adalah...",
+              a: ["Ikan Badut", "Lumba-lumba", "Hiu Martil", "Belut"],
+              c: 0,
+            },
+            {
+              q: "Hewan laut yang bisa memancarkan tinta untuk mengelabui musuh adalah...",
+              a: ["Cumi-cumi", "Ikan Paus", "Ikan Hiu", "Kuda Laut"],
+              c: 0,
+            },
+          ],
+          medium: [
+            {
+              q: "Lumba-lumba diketahui dapat saling memanggil menggunakan...",
+              a: [
+                "Siulan unik seperti 'nama' masing-masing",
+                "Gelombang panas",
+                "Sinar cahaya dari mata",
+                "Gerakan sirip saja",
+              ],
+              c: 0,
+            },
+            {
+              q: "Gurita dapat meloloskan diri dari akuarium dengan cara...",
+              a: [
+                "Menghafal letak celah kecil dan mendorong tubuhnya keluar",
+                "Melompat tinggi ke luar",
+                "Menggigit kaca sampai pecah",
+                "Mengeringkan airnya sendiri",
+              ],
+              c: 0,
+            },
+            {
+              q: "Paus pembunuh (orca) di alam liar terlihat mengajarkan teknik berburu pada anaknya. Ini contoh dari...",
+              a: [
+                "Belajar sosial dan pewarisan budaya",
+                "Refleks tanpa sadar",
+                "Mutasi genetik",
+                "Migrasi acak",
+              ],
+              c: 0,
+            },
+            {
+              q: "Beberapa spesies ikan dapat mengingat lokasi perangkap makanan dan menghindarinya. Ini menunjukkan...",
+              a: [
+                "Memori jangka panjang yang cukup baik",
+                "Hanya insting bawaan",
+                "Tidak punya kemampuan belajar",
+                "Selalu lupa lokasi",
+              ],
+              c: 0,
+            },
+            {
+              q: "Gurita pernah terlihat membuka tutup toples dari dalam air. Perilaku ini menunjukkan...",
+              a: [
+                "Pemecahan masalah yang kompleks",
+                "Refleks tanpa tujuan",
+                "Gerakan acak",
+                "Hanya ingin bermain air",
+              ],
+              c: 0,
+            },
+          ],
+          hard: [
+            {
+              q: "Penelitian menunjukkan bahwa lumba-lumba mampu mengenali dirinya di cermin. Ini mengindikasikan...",
+              a: [
+                "Adanya kesadaran diri yang tinggi",
+                "Hanya tertarik pada cahaya",
+                "Takut pada air",
+                "Gangguan penglihatan",
+              ],
+              c: 0,
+            },
+            {
+              q: "Gurita memiliki jumlah neuron yang banyak, sebagian besar terdapat di...",
+              a: ["Lengan-lengannya", "Sirip ekor", "Mata", "Insang"],
+              c: 0,
+            },
+            {
+              q: "Beberapa lumba-lumba tertangkap kamera sedang menggunakan spons laut untuk melindungi moncongnya saat mencari makan. Ini adalah contoh...",
+              a: [
+                "Penggunaan alat yang dipelajari dari induknya",
+                "Gerakan acak tanpa makna",
+                "Naluri bawaan semua ikan",
+                "Upaya untuk tidur",
+              ],
+              c: 0,
+            },
+            {
+              q: "Dalam eksperimen, gurita mampu membedakan bentuk dan pola visual tertentu. Hal ini menunjukkan...",
+              a: [
+                "Kemampuan belajar asosiatif dan pengenalan pola",
+                "Terganggu matanya",
+                "Hanya melihat hitam putih",
+                "Tidak punya memori sama sekali",
+              ],
+              c: 0,
+            },
+            {
+              q: "Orca di beberapa wilayah punya 'dialek' suara unik antar kelompok. Dalam ilmu biologi tingkah laku, ini bisa disebut...",
+              a: [
+                "Budaya hewan (animal culture)",
+                "Mutasi suara",
+                "Kerusakan pita suara",
+                "Insting berburu normal",
+              ],
+              c: 0,
+            },
+          ],
+        },
+        sky: {
+          easy: [
+            {
+              q: "Burung yang dikenal punya penglihatan sangat tajam dan sering melambangkan kekuatan adalah...",
+              a: ["Elang", "Ayam", "Bebek", "Burung Unta"],
+              c: 0,
+            },
+            {
+              q: "Burung yang dikenal dapat menirukan suara manusia dengan sangat baik adalah...",
+              a: ["Burung Beo", "Merpati", "Gagak", "Burung Hantu"],
+              c: 0,
+            },
+            {
+              q: "Burung yang sering digunakan untuk mengirim pesan pada zaman dahulu adalah...",
+              a: ["Merpati pos", "Elang", "Ayam jago", "Bebek liar"],
+              c: 0,
+            },
+            {
+              q: "Burung malam yang memiliki pendengaran tajam dan bisa memburu dalam gelap adalah...",
+              a: ["Burung Hantu", "Kutilang", "Cenderawasih", "Bangau"],
+              c: 0,
+            },
+            {
+              q: "Hewan kecil bersayap yang sering dianggap cerdas karena mampu mencari sumber darah dengan presisi adalah...",
+              a: ["Nyamuk", "Lalat", "Capung", "Lebah"],
+              c: 0,
+            },
+          ],
+          medium: [
+            {
+              q: "Gagak dikenal sangat cerdas karena mampu...",
+              a: [
+                "Menggunakan alat sederhana untuk mengambil makanan",
+                "Terbang paling tinggi",
+                "Bernyanyi merdu setiap pagi",
+                "Berubah warna bulu sesuai musim",
+              ],
+              c: 0,
+            },
+            {
+              q: "Burung beo dapat menirukan suara manusia karena...",
+              a: [
+                "Memiliki kemampuan meniru pola suara dan ritme",
+                "Bisa membaca tulisan",
+                "Mengerti semua bahasa manusia secara penuh",
+                "Mempunyai pita suara manusia",
+              ],
+              c: 0,
+            },
+            {
+              q: "Merpati mampu menemukan jalan pulang dari jarak jauh karena...",
+              a: [
+                "Menggunakan orientasi medan magnet bumi dan posisi matahari",
+                "Mengikuti aroma rumah pemilik",
+                "Menghafal bentuk awan",
+                "Diberi peta kertas",
+              ],
+              c: 0,
+            },
+            {
+              q: "Burung pengingat lokasi biji yang ia kubur lalu dicari kembali di musim lain menunjukkan...",
+              a: [
+                "Memori spasial yang kuat",
+                "Tidak pernah makan lagi",
+                "Hanya menggali sembarangan",
+                "Takut pada musim dingin",
+              ],
+              c: 0,
+            },
+            {
+              q: "Dalam beberapa penelitian, burung dapat membedakan wajah manusia tertentu. Ini menunjukkan...",
+              a: [
+                "Kemampuan pengenalan individu lintas spesies",
+                "Hanya tertarik warna baju",
+                "Takut pada semua manusia sama rata",
+                "Tidak bisa melihat detail",
+              ],
+              c: 0,
+            },
+          ],
+          hard: [
+            {
+              q: "Eksperimen menempatkan gagak dengan teka-teki beberapa tahap menunjukkan bahwa gagak mampu...",
+              a: [
+                "Merencanakan beberapa langkah ke depan untuk mencapai tujuan",
+                "Hanya menabrak kaca berulang-ulang",
+                "Menghafal lagu panjang",
+                "Berhenti mencoba setelah gagal sekali",
+              ],
+              c: 0,
+            },
+            {
+              q: "Beberapa spesies burung diketahui melakukan 'play' atau bermain salju/angin hanya untuk bersenang-senang. Dalam studi kognisi hewan, ini sering dikaitkan dengan...",
+              a: [
+                "Kecerdasan dan kompleksitas emosi",
+                "Kebutuhan makanan tinggi",
+                "Naluri migrasi",
+                "Upaya menghemat energi",
+              ],
+              c: 0,
+            },
+            {
+              q: "Burung scrub jay menyembunyikan makanan dan memindahkannya lagi jika merasa 'diawasi' burung lain. Ini menunjukkan...",
+              a: [
+                "Teori pikiran sederhana (memperkirakan niat burung lain)",
+                "Sekadar refleks fisik",
+                "Gangguan orientasi arah",
+                "Tidak punya strategi sama sekali",
+              ],
+              c: 0,
+            },
+            {
+              q: "Dalam tugas memecahkan teka-teki air (water displacement task), beberapa burung mampu menjatuhkan batu ke dalam wadah agar air naik. Konsep fisika apa yang tampaknya mereka pahami secara intuitif?",
+              a: [
+                "Prinsip perpindahan volume",
+                "Tekanan darah",
+                "Gravitasi nol",
+                "Pembiasan cahaya",
+              ],
+              c: 0,
+            },
+            {
+              q: "Beberapa penelitian menunjukkan burung dapat menghitung jumlah objek kecil (seperti 1–4). Kemampuan ini disebut...",
+              a: [
+                "Numerosity (pengertian jumlah dasar)",
+                "Echolokasi",
+                "Sinestesia",
+                "Kondisioning klasik",
+              ],
+              c: 0,
+            },
+          ],
+        },
+      };
+
+      // ================ VARIABEL GLOBAL =================
+      let currentCategory = "";
+      let currentDifficulty = "";
+      let currentQuestionIndex = 0;
+      let score = 0;
+      let currentQuizData = [];
+      let timerInterval = null;
+      let timeLeft = 30;
+
+      function setTheme(cat) {
+        const body = document.body;
+        body.classList.remove(
+          "theme-default",
+          "theme-land",
+          "theme-sea",
+          "theme-sky"
+        );
+        if (!cat) body.classList.add("theme-default");
+        else body.classList.add("theme-" + cat);
+      }
+
+      // LOADING → MASUK KATEGORI
+      window.onload = () => {
+        setTheme(null);
+        setTimeout(() => {
+          document.getElementById("loadingScreen").classList.add("fade-out");
+          setTimeout(() => {
+            document.getElementById("loadingScreen").style.display = "none";
+            document.getElementById("categoryPage").classList.add("active");
+            showBackButton();
+          }, 900);
+        }, 2000);
+      };
+
+      function showBackButton() {
+        document.getElementById("backBtn").style.display = "flex";
+      }
+      function hideBackButton() {
+        document.getElementById("backBtn").style.display = "none";
+      }
+
+      // TOMBOL KEMBALI
+      function confirmExit() {
+        const isOnCategory = document
+          .getElementById("categoryPage")
+          .classList.contains("active");
+        const isOnQuiz = document
+          .getElementById("quizPage")
+          .classList.contains("active");
+
+        if (isOnQuiz) {
+          if (!confirm("Yakin keluar dari kuis?\nSkor kamu akan hilang."))
+            return;
+        }
+
+        if (isOnCategory) {
+          if (confirm("Keluar dari Quiz IQ Hewan?")) {
+            if (history.length > 1) history.back();
+            else {
+              window.close();
+              setTimeout(() => (window.location.href = "about:blank"), 100);
+            }
+          }
+          return;
+        }
+
+        // Balik ke halaman kategori
+        clearInterval(timerInterval);
+        currentCategory = "";
+        currentDifficulty = "";
+        currentQuestionIndex = 0;
+        score = 0;
+        currentQuizData = [];
+        setTheme(null);
+
+        document.querySelectorAll(".quiz-container").forEach((p) => {
+          p.classList.remove("active");
+          p.style.display = "none";
+        });
+        const catPage = document.getElementById("categoryPage");
+        catPage.style.display = "block";
+        catPage.classList.add("active");
+      }
+
+      function showDifficulty(cat) {
+        currentCategory = cat;
+        setTheme(cat);
+
+        document.querySelectorAll(".quiz-container").forEach((p) => {
+          p.classList.remove("active");
+          p.style.display = "none";
+        });
+
+        const page = document.getElementById("difficultyPage");
+        page.style.display = "block";
+        page.classList.add("active");
+
+        const label =
+          cat === "land" ? "Darat" : cat === "sea" ? "Laut" : "Udara";
+        document.getElementById(
+          "difficultyTitle"
+        ).textContent = `Kategori: ${label}`;
+
+        showBackButton();
+      }
+
+      function startQuiz(diff) {
+        currentDifficulty = diff;
+        currentQuestionIndex = 0;
+        score = 0;
+
+        // Guard: pastikan data ada
+        if (!quizDataAll[currentCategory]) {
+          alert("Data soal untuk kategori ini belum diisi.");
+          return;
+        }
+
+        let bank = quizDataAll[currentCategory][diff];
+
+        if (!bank || !Array.isArray(bank) || bank.length === 0) {
+          bank = quizDataAll[currentCategory].easy;
+        }
+
+        if (!bank || !Array.isArray(bank) || bank.length === 0) {
+          alert("Belum ada soal untuk kategori dan level ini.");
+          return;
+        }
+
+        // copy + randomisasi jawaban
+        currentQuizData = bank.map((q) => {
+          const correct = q.a[q.c];
+          const shuffled = shuffleArray([...q.a]);
+          const newIndex = shuffled.indexOf(correct);
+          return { q: q.q, a: shuffled, c: newIndex };
+        });
+
+        document.querySelectorAll(".quiz-container").forEach((p) => {
+          p.classList.remove("active");
+          p.style.display = "none";
+        });
+
+        const quizPage = document.getElementById("quizPage");
+        quizPage.style.display = "block";
+        quizPage.classList.add("active");
+
+        showBackButton();
+        loadQuestion();
+      }
+
+      function startTimer() {
+        clearInterval(timerInterval);
+        timeLeft = 30;
+        document.getElementById("timer").textContent = timeLeft;
+
+        timerInterval = setInterval(() => {
+          timeLeft--;
+          document.getElementById("timer").textContent = timeLeft;
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            selectAnswer(-1);
+          }
+        }, 1000);
+      }
+
+      function loadQuestion() {
+        clearInterval(timerInterval);
+        startTimer();
+
+        const q = currentQuizData[currentQuestionIndex];
+
+        const badge = document.getElementById("categoryBadge");
+        const nama =
+          currentCategory === "land"
+            ? "Darat"
+            : currentCategory === "sea"
+            ? "Laut"
+            : "Udara";
+        badge.textContent = `${nama} • ${
+          currentDifficulty.charAt(0).toUpperCase() + currentDifficulty.slice(1)
+        }`;
+        badge.className =
+          "category-badge " +
+          (currentCategory === "land"
+            ? "btn-land"
+            : currentCategory === "sea"
+            ? "btn-sea"
+            : "btn-sky");
+
+        document.getElementById("questionNumber").textContent = `Pertanyaan ${
+          currentQuestionIndex + 1
+        } dari ${currentQuizData.length}`;
+
+        document.getElementById("progressFill").style.width = `${
+          ((currentQuestionIndex + 1) / currentQuizData.length) * 100
+        }%`;
+
+        document.getElementById("questionText").textContent = q.q;
+
+        const grid = document.getElementById("answersGrid");
+        grid.innerHTML = "";
+        q.a.forEach((ans, i) => {
+          const btn = document.createElement("button");
+          btn.className = "answer-btn";
+          btn.textContent = ans;
+          btn.onclick = () => selectAnswer(i);
+          grid.appendChild(btn);
+        });
+      }
+
+      function selectAnswer(chosen) {
+        const btns = document.querySelectorAll("#answersGrid .answer-btn");
+        if (!btns.length || btns[0].style.pointerEvents === "none") return;
+
+        clearInterval(timerInterval);
+
+        const q = currentQuizData[currentQuestionIndex];
+        btns.forEach((b) => (b.style.pointerEvents = "none"));
+
+        if (chosen === q.c) {
+          if (chosen !== -1) btns[chosen].classList.add("correct");
+          score++;
+        } else {
+          if (chosen !== -1) btns[chosen].classList.add("wrong");
+          btns[q.c].classList.add("correct");
+        }
+
+        setTimeout(() => {
+          currentQuestionIndex++;
+          if (currentQuestionIndex < currentQuizData.length) {
+            loadQuestion();
+          } else {
+            showResults();
+          }
+        }, 1600);
+      }
+
+      function showResults() {
+        clearInterval(timerInterval);
+
+        document.querySelectorAll(".quiz-container").forEach((p) => {
+          p.classList.remove("active");
+          p.style.display = "none";
+        });
+
+        const rp = document.getElementById("resultPage");
+        rp.style.display = "block";
+        rp.classList.add("active");
+
+        document.getElementById(
+          "finalScore"
+        ).textContent = `${score}/${currentQuizData.length}`;
+
+        const map = {
+          land: {
+            9: "Gorila",
+            7: "Rubah",
+            5: "Serigala",
+            3: "Badak",
+            1: "Kura-kura",
+            0: "Cacing",
+          },
+          sea: {
+            9: "Lumba-lumba",
+            7: "Gurita",
+            5: "Hiu",
+            3: "Nemo",
+            1: "Udang",
+            0: "Kerang",
+          },
+          sky: {
+            9: "Elang",
+            7: "Burung Hantu",
+            5: "Merpati",
+            3: "Bebek",
+            1: "Kupu-kupu",
+            0: "Nyamuk",
+          },
+        };
+
+        const tier =
+          score >= 9
+            ? 9
+            : score >= 7
+            ? 7
+            : score >= 5
+            ? 5
+            : score >= 3
+            ? 3
+            : score >= 1
+            ? 1
+            : 0;
+
+        const hewan = map[currentCategory]?.[tier] || "Makhluk Misterius";
+        document.getElementById("animalEmoji").textContent = hewan;
+        document.getElementById(
+          "animalDescription"
+        ).innerHTML = `<strong>IQ kamu setara ${hewan}!</strong><br>Skor: ${score}/${currentQuizData.length}`;
+
+        showBackButton();
+      }
+
+      function shuffleArray(a) {
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+    </script>
+  </body>
+</html>

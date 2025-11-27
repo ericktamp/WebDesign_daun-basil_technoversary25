@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Explore Nature</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Poppins:wght@400;600;700;800&family=Inter:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        color: white;
+        background: #000;
+        overflow: hidden;
+        perspective: 1500px;
+      }
+      section {
+        min-height: 100vh;
+        width: 100vw;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 0 20px;
+      }
+
+      #hero {
+        background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)),
+          url("foto (1).jpeg") center/cover no-repeat;
+      }
+      #forest {
+        background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.6)),
+          url("foto (1).png") center/cover no-repeat;
+      }
+      #ocean {
+        background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7)),
+          url("foto (2).jpeg") center/cover no-repeat;
+      }
+
+      /* BOOK COVER */
+      #book-cover {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: linear-gradient(
+          135deg,
+          #2c1810 0%,
+          #5d4037 50%,
+          #3e2723 100%
+        );
+        z-index: 5000;
+        transform-origin: left center;
+        transition: transform 2s cubic-bezier(0.65, 0, 0.35, 1),
+          opacity 0.6s ease, visibility 0.6s ease;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        backface-visibility: hidden;
+        overflow: hidden;
+        box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.5),
+          20px 0 50px rgba(0, 0, 0, 0.8);
+        cursor: pointer;
+      }
+      #book-cover::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 2px,
+          rgba(0, 0, 0, 0.03) 2px,
+          rgba(0, 0, 0, 0.03) 4px
+        );
+        opacity: 0.6;
+      }
+
+      /* PSEUDO TEXT — default no animation */
+      #book-cover::before {
+        content: "EXPLORE NATURE";
+        font-family: "Cinzel", serif;
+        font-size: 5.5vw;
+        color: #d4af37;
+        font-weight: 700;
+        text-shadow: 0 0 20px rgba(212, 175, 55, 0.5),
+          0 0 40px rgba(212, 175, 55, 0.3), 3px 3px 8px rgba(0, 0, 0, 0.8);
+        z-index: 10;
+        letter-spacing: 8px;
+        pointer-events: none;
+      }
+
+      /* Activate animation only when .shimmer class present.
+         animation plays once (iteration-count:1) */
+      .shimmer::before {
+        animation: shimmer 3s ease-in-out 1;
+      }
+      @keyframes shimmer {
+        0%,
+        100% {
+          text-shadow: 0 0 20px rgba(212, 175, 55, 0.5),
+            0 0 40px rgba(212, 175, 55, 0.3), 3px 3px 8px rgba(0, 0, 0, 0.8);
+        }
+        50% {
+          text-shadow: 0 0 30px rgba(212, 175, 55, 0.8),
+            0 0 60px rgba(212, 175, 55, 0.5), 3px 3px 8px rgba(0, 0, 0, 0.8);
+        }
+      }
+
+      /* When opened, rotate and hide cover */
+      .opened #book-cover {
+        transform: rotateY(-180deg);
+        box-shadow: -30px 0 80px rgba(255, 255, 255, 0.12),
+          20px 0 50px rgba(0, 0, 0, 0.8);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      /* LIGHT PARTICLES */
+      .light-particles {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 4999;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 1s 1.5s ease-in;
+      }
+      .opened .light-particles {
+        opacity: 1;
+      }
+      .particle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 1) 0%,
+          rgba(255, 255, 255, 0) 70%
+        );
+        border-radius: 50%;
+        animation: float-particle 4s ease-in-out infinite;
+      }
+      @keyframes float-particle {
+        0%,
+        100% {
+          transform: translateY(0) translateX(0);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-100vh) translateX(50px);
+          opacity: 0;
+        }
+      }
+
+      /* PAGE CONTAINER */
+      #page-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 4000;
+        opacity: 0;
+        transition: opacity 0.5s 1.5s ease-in;
+      }
+      .opened #page-container {
+        opacity: 1;
+      }
+
+      /* NAVBAR */
+      .navbar {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        padding: 1.8rem 7%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000;
+        transition: all 0.4s ease;
+        transform: translateY(-100px);
+      }
+      .opened .navbar {
+        transform: translateY(0);
+        transition: transform 0.5s 2s ease-out;
+      }
+      .navbar.scrolled {
+        background: rgba(255, 255, 255, 0.97);
+        backdrop-filter: blur(12px);
+        padding: 1.2rem 7%;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+      }
+      .logo {
+        font-size: 2rem;
+        font-weight: 800;
+        color: white;
+        letter-spacing: -1px;
+        font-family: "Poppins", sans-serif;
+      }
+      .logo span {
+        color: #00d4aa;
+      }
+      .nav-links a {
+        color: white;
+        margin-left: 2.5rem;
+        font-weight: 600;
+        text-decoration: none;
+        font-size: 1.05rem;
+        position: relative;
+        transition: color 0.3s;
+        font-family: "Poppins", sans-serif;
+      }
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        bottom: -6px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: #00d4aa;
+        transition: 0.3s;
+      }
+      .nav-links a:hover::after {
+        width: 100%;
+      }
+      .nav-links a:hover {
+        color: #00d4aa;
+      }
+      .menu-toggle {
+        display: none;
+        color: white;
+        font-size: 2rem;
+        cursor: pointer;
+        z-index: 1001;
+      }
+
+      /* title box, buttons, video modal, responsive etc. (same as original) */
+      .title-box {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(15px);
+        padding: 30px 70px;
+        border-radius: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.25);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        margin-bottom: 40px;
+        transform: scale(0.8);
+        opacity: 0;
+        transition: transform 0.8s 2.2s ease, opacity 0.8s 2.2s ease;
+      }
+      .opened .title-box {
+        transform: scale(1);
+        opacity: 1;
+      }
+      h1 {
+        font-size: 48px;
+        font-weight: 800;
+        letter-spacing: 4px;
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+      }
+      h2 {
+        font-size: 40px;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+        margin-bottom: 30px;
+      }
+
+      .glass-btn {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(12px);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        padding: 18px 50px;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.4s;
+        text-transform: uppercase;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        transform: translateY(20px);
+        opacity: 0;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .opened .glass-btn {
+        transform: translateY(0);
+        opacity: 1;
+        transition: transform 0.8s 2.4s ease, opacity 0.8s 2.4s ease;
+      }
+      .glass-btn:hover {
+        background: rgba(255, 255, 255, 0.35);
+        transform: translateY(-6px);
+        border-color: rgba(255, 255, 255, 0.7);
+      }
+
+      /* video button and modal styles kept from original... */
+      .video-play-btn {
+        position: absolute;
+        width: 90px;
+        height: 90px;
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(15px);
+        border: 3px solid rgba(255, 255, 255, 0.4);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        opacity: 0;
+        animation: float 3s ease-in-out infinite;
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+      }
+      .opened .video-play-btn {
+        opacity: 1;
+        transition: opacity 0.8s 2.6s ease;
+      }
+      .video-play-btn::before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+      }
+      @keyframes pulse-ring {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1.8);
+          opacity: 0;
+        }
+      }
+      .video-play-btn svg {
+        width: 32px;
+        height: 32px;
+        fill: white;
+        margin-left: 4px;
+        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+        z-index: 1;
+      }
+      .video-play-btn::after {
+        content: attr(data-label);
+        position: absolute;
+        bottom: -35px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        color: white;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+        opacity: 0;
+        transition: all 0.3s;
+        pointer-events: none;
+      }
+      .video-play-btn:hover::after {
+        opacity: 1;
+        bottom: -40px;
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-15px);
+        }
+      }
+
+      /* modal */
+      .video-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(15px);
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
+      .video-modal.show {
+        display: flex;
+        opacity: 1;
+        justify-content: center;
+        align-items: center;
+      }
+      .video-container {
+        position: relative;
+        width: 90%;
+        max-width: 1100px;
+        background: #000;
+        border-radius: 20px;
+        overflow: visible;
+        box-shadow: 0 30px 90px rgba(0, 0, 0, 0.9);
+        margin: auto;
+      }
+      .video-container iframe {
+        width: 100%;
+        height: 70vh;
+        border: none;
+        display: block;
+        border-radius: 20px;
+      }
+      .close-video {
+        position: absolute;
+        top: -20px;
+        right: -20px;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #ff4757 0%, #ff2d2d 100%);
+        color: white;
+        font-size: 36px;
+        font-weight: bold;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 10px 30px rgba(255, 45, 45, 0.6);
+        transition: all 0.3s ease;
+        z-index: 10000;
+        border: 3px solid white;
+        line-height: 1;
+      }
+      .close-video:hover {
+        transform: scale(1.15) rotate(90deg);
+      }
+
+      @media (max-width: 768px) {
+        .menu-toggle {
+          display: block;
+        }
+        .nav-links {
+          position: fixed;
+          top: 0;
+          right: -100%;
+          width: 100%;
+          height: 100vh;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          background-color: rgba(0, 0, 0, 0.95);
+          backdrop-filter: blur(10px);
+          transition: right 0.4s ease-in-out;
+          z-index: 999;
+        }
+        .nav-links.active {
+          right: 0;
+        }
+        .nav-links a {
+          margin: 1.5rem 0;
+          font-size: 1.8rem;
+          color: white;
+        }
+        .nav-links a::after {
+          background: #00d4aa;
+        }
+        .navbar.scrolled .nav-links {
+          background-color: rgba(0, 0, 0, 0.95);
+        }
+        .navbar.scrolled .nav-links a {
+          color: white;
+        }
+
+        h1 {
+          font-size: 32px;
+        }
+        h2 {
+          font-size: 28px;
+        }
+        .title-box {
+          padding: 20px 40px;
+        }
+        .video-container iframe {
+          height: 50vh;
+        }
+        .close-video {
+          width: 50px;
+          height: 50px;
+          font-size: 28px;
+          top: -15px;
+          right: -15px;
+        }
+        #book-cover::before {
+          font-size: 8vw;
+          letter-spacing: 4px;
+        }
+        .navbar {
+          padding: 1.8rem 7%;
+        }
+        .video-play-btn {
+          width: 70px;
+          height: 70px;
+        }
+        .video-play-btn svg {
+          width: 26px;
+          height: 26px;
+        }
+        #hero .video-play-btn {
+          top: 100px;
+          right: 30px;
+        }
+        #forest .video-play-btn {
+          top: 100px;
+          left: 30px;
+        }
+        #ocean .video-play-btn {
+          bottom: 100px;
+          right: 30px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="book-cover" title="Klik untuk buka lebih cepat"></div>
+
+    <div class="light-particles">
+      <div class="particle" style="left: 20%; animation-delay: 0s"></div>
+      <div class="particle" style="left: 40%; animation-delay: 0.5s"></div>
+      <div class="particle" style="left: 60%; animation-delay: 1s"></div>
+      <div class="particle" style="left: 80%; animation-delay: 1.5s"></div>
+      <div class="particle" style="left: 30%; animation-delay: 0.8s"></div>
+      <div class="particle" style="left: 70%; animation-delay: 1.2s"></div>
+    </div>
+
+    <div id="page-container">
+      <nav class="navbar" id="navbar">
+        <div class="logo">Nature<span>Intuition</span></div>
+        <div class="nav-links" id="navLinks">
+          <a href="index.html">Home</a>
+          <a href="3in1.html">Experience</a>
+          <a href="artikel.html">Artikel</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="menu-toggle" id="menuToggle">&#9776;</div>
+      </nav>
+
+      <section id="hero">
+        <div class="title-box"><h1>EXPLORE THE NATURAL WORLD</h1></div>
+        <a href="skylearn.html" class="glass-btn">Start Journey</a><br />
+        <a href="udara.html" class="glass-btn">How's life up there?</a>
+      </section>
+
+      <section id="forest">
+        <h2>FOREST LIFE</h2>
+        <a href="naturelearn.html" class="glass-btn">Discover Forest</a><br />
+        <a href="darat.html" class="glass-btn">How Forest LOOKS LIKE?</a>
+      </section>
+
+      <section id="ocean">
+        <h2>OCEAN DISCOVERY</h2>
+        <a href="lautlearn.html" class="glass-btn">Explore Ocean</a><br />
+        <a href="laut.html" class="glass-btn">Check How Ocean Works Here!</a>
+      </section>
+    </div>
+
+    <div class="video-modal" id="videoModal">
+      <div class="video-container">
+        <div class="close-video" onclick="closeVideo()">×</div>
+        <iframe
+          id="youtubeVideo"
+          src=""
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+
+    <script>
+      /**********************
+        Intro control (10-minute cooldown)
+        - key used: "bookLast"
+        - cooldown: 10 minutes
+        - animation duration must match CSS (3000 ms)
+      **********************/
+      (function () {
+        const COVER = document.getElementById("book-cover");
+        const BODY = document.body;
+        const ANIM_DUR_MS = 3000; // harus sinkron dengan CSS .shimmer animation (3s)
+        const COOLDOWN_MS = 10 * 60 * 1000; // 10 menit
+
+        function safeGet(key) {
+          try {
+            return localStorage.getItem(key);
+          } catch (e) {
+            return null;
+          }
+        }
+        function safeSet(key, val) {
+          try {
+            localStorage.setItem(key, val);
+          } catch (e) {
+            /* ignore */
+          }
+        }
+
+        const last = parseInt(safeGet("bookLast") || "0", 10);
+        const now = Date.now();
+
+        // helper untuk buka langsung tanpa animasi
+        function openImmediately() {
+          BODY.classList.add("opened");
+          // restore scroll (biarkan delay kecil agar transisi smooth)
+          setTimeout(() => (document.body.style.overflow = "auto"), 50);
+        }
+
+        // klik cover -> skip animasi and record timestamp
+        COVER.addEventListener("click", () => {
+          safeSet("bookLast", String(Date.now()));
+          openImmediately();
+        });
+
+        // jika last ada dan belum lewat cooldown => langsung buka
+        if (last && now - last < COOLDOWN_MS) {
+          openImmediately();
+          return;
+        }
+
+        // otherwise mainkan animasi sekali
+        // tambahkan class shimmer untuk memicu pseudo-element animation
+        COVER.classList.add("shimmer");
+
+        // setelah animasi selesai, simpan waktu dan buka halaman
+        setTimeout(() => {
+          safeSet("bookLast", String(Date.now()));
+          // remove shimmer class to avoid re-trigger on some browsers
+          COVER.classList.remove("shimmer");
+          BODY.classList.add("opened");
+          // restore scroll
+          document.body.style.overflow = "auto";
+        }, ANIM_DUR_MS + 80);
+
+        // safety fallback: jika user reload atau animation didn't run, ensure opened after a max timeout (optional)
+        setTimeout(() => {
+          if (!BODY.classList.contains("opened")) {
+            safeSet("bookLast", String(Date.now()));
+            COVER.classList.remove("shimmer");
+            BODY.classList.add("opened");
+            document.body.style.overflow = "auto";
+          }
+        }, ANIM_DUR_MS + 2000);
+      })();
+
+      // existing UI scripts (navbar, video, menu)
+      window.addEventListener("scroll", () => {
+        document
+          .getElementById("navbar")
+          .classList.toggle("scrolled", window.scrollY > 100);
+      });
+
+      function openVideo(url) {
+        document.getElementById("youtubeVideo").src = url + "?autoplay=1";
+        document.getElementById("videoModal").classList.add("show");
+        document.body.style.overflow = "hidden";
+      }
+      function closeVideo() {
+        document.getElementById("videoModal").classList.remove("show");
+        document.getElementById("youtubeVideo").src = "";
+        document.body.style.overflow = "auto";
+      }
+      document
+        .getElementById("videoModal")
+        .addEventListener("click", function (e) {
+          if (e.target === this) closeVideo();
+        });
+
+      const menuToggle = document.getElementById("menuToggle");
+      const navLinks = document.getElementById("navLinks");
+      function toggleMenu() {
+        navLinks.classList.toggle("active");
+        menuToggle.innerHTML = navLinks.classList.contains("active")
+          ? "&times;"
+          : "&#9776;";
+        document.body.style.overflow = navLinks.classList.contains("active")
+          ? "hidden"
+          : "auto";
+      }
+      menuToggle.addEventListener("click", toggleMenu);
+
+      // close mobile nav if link clicked
+      navLinks.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+          if (navLinks.classList.contains("active")) toggleMenu();
+        });
+      });
+    </script>
+  </body>
+</html>

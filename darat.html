@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The High Peaks</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        overflow-x: hidden;
+        /* Gradasi Latar Belakang - Dari Hijau ke Cokelat/Salju */
+        background: linear-gradient(
+          to bottom,
+          #f0f8ff 0%,
+          /* Salju / Langit di Puncak */ #a0522d 10%,
+          /* Cokelat Batu/Tanah */ #6b8e23 30%,
+          /* Hijau Zaitun (Vegetasi Tinggi) */ #3cb371 60%,
+          /* Hijau Sedang */ #228b22 80%,
+          /* Hijau Hutan (Ketinggian Rendah) */ #006400 100%
+            /* Hijau Gelap / Permukaan Tanah */
+        );
+      }
+
+      .ocean-container {
+        position: relative;
+        /* Max height disesuaikan untuk mencapai 8848m */
+        min-height: 20000px;
+      }
+
+      .depth-indicator {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        padding: 15px 25px;
+        border-radius: 10px;
+        color: #333;
+        font-size: 24px;
+        font-weight: 600;
+        z-index: 1000;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      .depth-indicator #currentHeight {
+        color: #000;
+      }
+
+      .depth-indicator span {
+        font-size: 14px;
+        opacity: 0.8;
+        display: block;
+        margin-top: 5px;
+      }
+
+      .start-section {
+        position: relative;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: white;
+      }
+
+      .start-section h1 {
+        font-size: 72px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-align: center;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      }
+
+      .start-section p {
+        font-size: 24px;
+        opacity: 0.9;
+        margin-bottom: 40px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+      }
+
+      .scroll-hint {
+        position: absolute;
+        bottom: 40px;
+        font-size: 16px;
+        opacity: 0.7;
+        animation: bounce 2s infinite;
+      }
+
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .creature {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 600px;
+        color: white;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+
+      .creature.visible {
+        opacity: 1;
+      }
+
+      .creature-content {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 20px;
+        border-radius: 10px;
+      }
+
+      .creature h2 {
+        font-size: 28px;
+        margin-bottom: 15px;
+        color: #fff;
+        font-weight: 600;
+      }
+
+      .creature-icon {
+        font-size: 80px;
+        margin-bottom: 20px;
+        display: block;
+        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+      }
+
+      .creature p {
+        font-size: 16px;
+        line-height: 1.6;
+        opacity: 0.9;
+      }
+
+      .zone-marker {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        color: white;
+        font-size: 48px;
+        font-weight: 700;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+      }
+
+      .zone-marker.visible {
+        opacity: 0.8;
+      }
+
+      .fact-box {
+        position: absolute;
+        right: 100px;
+        width: 400px;
+        background: rgba(0, 0, 0, 0.3);
+        padding: 20px;
+        border-radius: 10px;
+        color: white;
+        font-size: 15px;
+        line-height: 1.8;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+
+      .fact-box strong {
+        font-size: 20px;
+        display: block;
+        margin-bottom: 10px;
+      }
+
+      .fact-box.visible {
+        opacity: 1;
+      }
+
+      .depth-line {
+        position: fixed;
+        left: 50px;
+        top: 0;
+        width: 2px;
+        height: 100vh;
+        background: rgba(255, 255, 255, 0.15);
+        z-index: 999;
+      }
+
+      .depth-marker {
+        position: absolute;
+        left: 50px;
+        width: 30px;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.3);
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+
+      .depth-marker.visible {
+        opacity: 1;
+      }
+
+      .depth-marker::after {
+        content: attr(data-depth);
+        position: absolute;
+        left: 40px;
+        top: -8px;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      /* Perbaikan untuk visibilitas di area terang */
+      .depth-marker[data-depth="8848m"]::after {
+        color: rgba(0, 0, 0, 0.7);
+      }
+      .depth-marker[data-depth="7000m"]::after {
+        color: rgba(0, 0, 0, 0.7);
+      }
+
+      @media (max-width: 768px) {
+        .creature {
+          width: 90%;
+        }
+
+        .fact-box {
+          right: 5%;
+          width: 90%;
+        }
+
+        .start-section h1 {
+          font-size: 48px;
+        }
+
+        .depth-indicator {
+          font-size: 18px;
+          padding: 10px 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="depth-line"></div>
+    <div class="depth-indicator">
+      <div id="currentHeight">0m</div>
+      <span>height</span>
+    </div>
+
+    <div class="ocean-container">
+      <div class="start-section" style="color: black">
+        <h1>The High Peaks</h1>
+        <p>Scroll to ascend the world's highest mountains</p>
+        <div class="scroll-hint" style="color: black">
+          ↓ Scroll Up (Ascend) ↓
+        </div>
+      </div>
+
+      <div class="creature" style="top: 1200px" data-height="100">
+        <div class="creature-content">
+          <span class="creature-icon">🐒</span>
+          <h2>Howler Monkey</h2>
+          <p>
+            Ditemukan di hutan tropis di ketinggian rendah. Suara auman mereka
+            yang keras dapat terdengar hingga 5 km, menandai wilayah mereka.
+          </p>
+        </div>
+      </div>
+
+      <div class="creature" style="top: 2000px" data-height="500">
+        <div class="creature-content">
+          <span class="creature-icon">🐅</span>
+          <h2>Bengal Tiger</h2>
+          <p>
+            Karnivora puncak di hutan dan padang rumput di bawah ketinggian
+            1.000 meter. Mereka adalah perenang yang kuat dan berburu di malam
+            hari.
+          </p>
+        </div>
+      </div>
+
+      <div class="zone-marker" style="top: 3000px" data-height="1000">
+        THE MONTANE ZONE (1000m)
+      </div>
+
+      <div class="fact-box" style="top: 3600px" data-height="1500">
+        <strong>🌳 Garis Pohon Bawah</strong>
+        Sekitar ketinggian ini, hutan mulai berubah dari hutan dataran rendah
+        menjadi hutan pegunungan yang lebih dingin dan lembab.
+      </div>
+
+      <div class="creature" style="top: 4200px" data-height="2000">
+        <div class="creature-content">
+          <span class="creature-icon">🐻</span>
+          <h2>Grizzly Bear</h2>
+          <p>
+            Berada di hutan lebat dan daerah pegunungan Amerika Utara. Mereka
+            adalah omnivora dan dapat berlari secepat kuda, meskipun ukurannya
+            besar.
+          </p>
+        </div>
+      </div>
+
+      <div class="creature" style="top: 5000px" data-height="2800">
+        <div class="creature-content">
+          <span class="creature-icon">🐐</span>
+          <h2>Mountain Goat</h2>
+          <p>
+            Pendaki yang luar biasa, hidup di tebing curam dan lereng berbatu.
+            Kuku mereka yang khusus memberikan cengkeraman yang luar biasa.
+          </p>
+        </div>
+      </div>
+
+      <div class="zone-marker" style="top: 5800px" data-height="3000">
+        THE ALPINE ZONE (3000m)
+      </div>
+
+      <div class="fact-box" style="top: 6600px" data-height="3500">
+        <strong>🌲 Garis Pohon Atas</strong>
+        Di atas ketinggian ini, pohon tidak dapat tumbuh lagi karena suhu
+        dingin, angin kencang, dan tanah yang tipis. Vegetasi sebagian besar
+        berupa semak dan rumput rendah.
+      </div>
+
+      <div class="creature" style="top: 7400px" data-height="4000">
+        <div class="creature-content">
+          <span class="creature-icon">🐆</span>
+          <h2>Snow Leopard</h2>
+          <p>
+            Predator yang sangat sulit ditangkap, hidup di pegunungan berbatu di
+            Asia Tengah. Ekor tebalnya membantu mereka menjaga keseimbangan di
+            medan terjal dan juga sebagai selimut.
+          </p>
+        </div>
+      </div>
+
+      <div class="creature" style="top: 8200px" data-height="4500">
+        <div class="creature-content">
+          <span class="creature-icon">🐑</span>
+          <h2>Yak</h2>
+          <p>
+            Mamalia besar yang beradaptasi untuk hidup di dataran tinggi
+            Himalaya. Mereka memiliki paru-paru dan hati yang besar untuk
+            menangani kadar oksigen yang rendah.
+          </p>
+        </div>
+      </div>
+
+      <div class="fact-box" style="top: 9000px" data-height="5000">
+        <strong>💨 Separuh Udara</strong>
+        Pada ketinggian 5.000 meter, kandungan oksigen di udara hanya sekitar
+        setengah dari yang ada di permukaan laut.
+      </div>
+
+      <div class="zone-marker" style="top: 10000px" data-height="6000">
+        THE NIVAL ZONE (6000m)
+      </div>
+
+      <div class="creature" style="top: 11000px" data-height="6500">
+        <div class="creature-content">
+          <span class="creature-icon">🦅</span>
+          <h2>Andean Condor</h2>
+          <p>
+            Salah satu burung terbang terbesar di dunia, sering terlihat
+            melayang di atas 6.000 meter. Mereka menggunakan arus termal untuk
+            menghemat energi.
+          </p>
+        </div>
+      </div>
+
+      <div class="fact-box" style="top: 12000px" data-height="7000">
+        <strong>💀 Zona Kematian</strong>
+        Di atas 7.000 meter, tubuh manusia tidak dapat beradaptasi dan akan mati
+        perlahan. Setiap pendakian ke sini harus termasuk oksigen tambahan.
+      </div>
+
+      <div class="creature" style="top: 13000px" data-height="8000">
+        <div class="creature-content">
+          <span class="creature-icon">🕷️</span>
+          <h2>Himalayan Jumping Spider</h2>
+          <p>
+            Makhluk hidup permanen tertinggi yang diketahui. Mereka bersembunyi
+            di celah-celah dan memakan serangga terbang yang tertiup angin dari
+            ketinggian yang lebih rendah.
+          </p>
+        </div>
+      </div>
+
+      <div class="zone-marker" style="top: 14000px" data-height="8848">
+        MOUNT EVEREST PEAK (8848m)
+      </div>
+
+      <div class="fact-box" style="top: 15000px" data-height="8848">
+        <strong>🏔️ Puncak Dunia</strong>
+        Ini adalah puncak <strong>Mount Everest</strong>, titik tertinggi di
+        Bumi di atas permukaan laut. Suhu bisa turun hingga -60°C.
+      </div>
+
+      <div class="creature" style="top: 16000px" data-height="8848">
+        <div class="creature-content">
+          <span class="creature-icon">🎉</span>
+          <h2>Anda Mencapai Puncak!</h2>
+          <p>
+            Selamat! Anda telah mendaki 8.848 meter ke puncak Gunung Everest.
+            Dengan tekanan udara yang sangat rendah dan suhu yang ekstrem, ini
+            adalah salah satu lingkungan paling keras di Bumi.
+          </p>
+        </div>
+      </div>
+
+      <!-- Marker di garis kiri -->
+      <div class="depth-marker" style="top: 2000px" data-depth="500m"></div>
+      <div class="depth-marker" style="top: 3000px" data-depth="1000m"></div>
+      <div class="depth-marker" style="top: 5000px" data-depth="2800m"></div>
+      <div class="depth-marker" style="top: 6000px" data-depth="3000m"></div>
+      <div class="depth-marker" style="top: 9000px" data-depth="5000m"></div>
+      <div class="depth-marker" style="top: 12000px" data-depth="7000m"></div>
+      <div class="depth-marker" style="top: 14000px" data-depth="8848m"></div>
+      <div class="depth-marker" style="top: 16000px" data-depth="8848m"></div>
+    </div>
+
+    <script>
+      const heightDisplay = document.getElementById("currentHeight");
+      const dynamicElements = document.querySelectorAll(
+        ".creature, .fact-box, .zone-marker, .depth-marker"
+      );
+
+      // keyframe ketinggian berdasarkan data-height
+      let keyPoints = [];
+
+      function buildKeyPoints() {
+        keyPoints = [];
+        const heightEls = document.querySelectorAll(
+          ".creature[data-height], .fact-box[data-height], .zone-marker[data-height]"
+        );
+
+        heightEls.forEach((el) => {
+          const h = Number(el.getAttribute("data-height"));
+          if (!isNaN(h)) {
+            const rect = el.getBoundingClientRect();
+            const y = window.scrollY + rect.top; // posisi absolut di dokumen
+            keyPoints.push({ y, h });
+          }
+        });
+
+        keyPoints.sort((a, b) => a.y - b.y);
+      }
+
+      function getInterpolatedHeight(scrollCenter) {
+        if (!keyPoints.length) return 0;
+
+        if (scrollCenter <= keyPoints[0].y) return keyPoints[0].h;
+        const last = keyPoints[keyPoints.length - 1];
+        if (scrollCenter >= last.y) return last.h;
+
+        for (let i = 0; i < keyPoints.length - 1; i++) {
+          const p1 = keyPoints[i];
+          const p2 = keyPoints[i + 1];
+          if (scrollCenter >= p1.y && scrollCenter <= p2.y) {
+            const ratio = (scrollCenter - p1.y) / (p2.y - p1.y);
+            return Math.round(p1.h + ratio * (p2.h - p1.h));
+          }
+        }
+        return last.h;
+      }
+
+      function updateDisplay() {
+        const scrollCenter = window.scrollY + window.innerHeight / 2;
+        const height = getInterpolatedHeight(scrollCenter);
+
+        heightDisplay.textContent = height.toLocaleString() + "m";
+
+        const windowHeight = window.innerHeight;
+        dynamicElements.forEach((element) => {
+          const rect = element.getBoundingClientRect();
+          if (
+            rect.top < windowHeight * 0.75 &&
+            rect.bottom > windowHeight * 0.25
+          ) {
+            element.classList.add("visible");
+          } else {
+            element.classList.remove("visible");
+          }
+        });
+      }
+
+      window.addEventListener("scroll", updateDisplay);
+      window.addEventListener("load", () => {
+        buildKeyPoints();
+        updateDisplay();
+      });
+      window.addEventListener("resize", () => {
+        buildKeyPoints();
+        updateDisplay();
+      });
+    </script>
+  </body>
+</html>

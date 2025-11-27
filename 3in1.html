@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dari Langit ke Dasar Laut</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        overflow-x: hidden;
+        color: #ffffff;
+        background: linear-gradient(
+          to bottom,
+          #f9fbff 0%,
+          #e3f2fd 40%,
+          #bbdefb 100%
+        );
+        background-attachment: fixed;
+        transition: background 0.8s ease;
+      }
+
+      .world-container {
+        position: relative;
+        min-height: 26000px; /* panjang perjalanan scroll */
+        padding-top: 120px;
+        padding-bottom: 400px;
+      }
+
+      /* ALTITUDE / DEPTH INDICATOR */
+
+      .alt-indicator {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        padding: 12px 18px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        z-index: 1000;
+        color: #111;
+        font-weight: 700;
+        font-size: 18px;
+      }
+
+      .alt-indicator span {
+        display: block;
+        margin-top: 2px;
+        font-size: 12px;
+        font-weight: 500;
+        color: #555;
+      }
+
+      /* VERTICAL DEPTH LINE + MARKER */
+
+      .depth-line {
+        position: fixed;
+        left: 26px;
+        top: 0;
+        width: 2px;
+        height: 100vh;
+        background: rgba(255, 255, 255, 0.28);
+        z-index: 900;
+      }
+
+      .depth-marker {
+        position: absolute;
+        left: 26px;
+        width: 26px;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.4);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
+
+      .depth-marker.visible {
+        opacity: 1;
+      }
+
+      .depth-marker::after {
+        content: attr(data-label);
+        position: absolute;
+        left: 32px;
+        top: -8px;
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.85);
+        white-space: nowrap;
+      }
+
+      /* STORY BLOCKS */
+
+      .story-block,
+      .zone-label,
+      .big-label {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(700px, 92vw);
+        opacity: 0;
+        transition: opacity 0.7s ease, transform 0.7s ease;
+        pointer-events: none;
+      }
+
+      .story-block.visible,
+      .zone-label.visible,
+      .big-label.visible {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-10px);
+        pointer-events: auto;
+      }
+
+      .card {
+        background: rgba(10, 15, 40, 0.78);
+        padding: 24px 26px;
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(14px);
+      }
+
+      .icon {
+        font-size: 56px;
+        display: block;
+        margin-bottom: 14px;
+        filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.55));
+      }
+
+      .card h2 {
+        font-size: 24px;
+        margin-bottom: 6px;
+        background: linear-gradient(90deg, #80ffd5, #00e5ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .meta {
+        font-size: 13px;
+        opacity: 0.85;
+        margin-bottom: 8px;
+      }
+
+      .card p {
+        font-size: 14px;
+        line-height: 1.7;
+        opacity: 0.95;
+      }
+
+      .zone-label {
+        text-align: center;
+        font-size: 34px;
+        font-weight: 800;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        text-shadow: 0 0 22px rgba(0, 0, 0, 0.8);
+      }
+
+      .big-label {
+        text-align: center;
+        font-size: 44px;
+        font-weight: 900;
+        letter-spacing: 6px;
+        text-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
+      }
+
+      .big-label span {
+        display: block;
+        font-size: 16px;
+        font-weight: 500;
+        margin-top: 10px;
+        letter-spacing: 2px;
+        opacity: 0.9;
+      }
+
+      .intro {
+        top: 400px;
+      }
+
+      @media (max-width: 768px) {
+        .big-label {
+          font-size: 32px;
+          letter-spacing: 3px;
+        }
+
+        .zone-label {
+          font-size: 24px;
+          letter-spacing: 3px;
+        }
+
+        .card {
+          padding: 18px 16px;
+        }
+
+        .card h2 {
+          font-size: 20px;
+        }
+
+        .icon {
+          font-size: 42px;
+        }
+
+        .alt-indicator {
+          font-size: 15px;
+          padding: 10px 12px;
+        }
+      }
+
+      /* CHAT WIDGET */
+
+      #chatWidget {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1200;
+      }
+
+      #chatToggle {
+        width: 60px;
+        height: 60px;
+        background: #00d4aa;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 10px 25px rgba(0, 212, 170, 0.5);
+        transition: 0.3s;
+      }
+
+      #chatToggle:hover {
+        transform: scale(1.1);
+      }
+
+      #chatBox {
+        position: absolute;
+        bottom: 80px;
+        right: 0;
+        width: 340px;
+        height: 480px;
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        display: none;
+        flex-direction: column;
+        transform-origin: bottom right;
+        transition: 0.4s;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+      }
+
+      #chatBox.open {
+        display: flex;
+        transform: scale(1);
+      }
+
+      .chat-header {
+        background: #00d4aa;
+        color: white;
+        padding: 1rem;
+        text-align: center;
+        font-weight: 600;
+      }
+
+      .chat-messages {
+        flex: 1;
+        padding: 1rem;
+        background: #f7f7f7;
+        overflow-y: auto;
+      }
+
+      .msg {
+        margin-bottom: 12px;
+        display: flex;
+      }
+
+      .msg.user {
+        justify-content: flex-end;
+      }
+
+      .bubble {
+        max-width: 80%;
+        padding: 8px 13px;
+        border-radius: 18px;
+        font-size: 0.82rem;
+        line-height: 1.35;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .msg.bot .bubble {
+        background: #00d4aa;
+        color: white;
+      }
+
+      .msg.user .bubble {
+        background: #333;
+        color: white;
+      }
+
+      .typing span {
+        width: 8px;
+        height: 8px;
+        background: white;
+        border-radius: 50%;
+        margin: 0 3px;
+        animation: typing 1.2s infinite;
+      }
+
+      .typing span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      .typing span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes typing {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-6px);
+        }
+      }
+
+      .chat-input {
+        padding: 1rem;
+        display: flex;
+        gap: 10px;
+        border-top: 1px solid #eee;
+        background: white;
+      }
+
+      .chat-input input {
+        flex: 1;
+        padding: 12px 16px;
+        border-radius: 30px;
+        border: 1px solid #ddd;
+        outline: none;
+      }
+
+      .chat-input button {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: #00d4aa;
+        border: none;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ALTITUDE / DEPTH HUD -->
+    <div class="alt-indicator">
+      <div id="altValue">12,0 km</div>
+      <span id="altLabel">di atas permukaan laut</span>
+    </div>
+
+    <div class="depth-line"></div>
+
+    <div class="world-container">
+      <!-- MARKER UTAMA (VISUAL AJA) -->
+      <div
+        class="depth-marker"
+        style="top: 2000px"
+        data-label="≈ 10.000 m (Zona Pesawat)"
+      ></div>
+
+      <div
+        class="depth-marker"
+        style="top: 4800px"
+        data-label="8.848 m (Puncak Everest)"
+      ></div>
+
+      <div
+        class="depth-marker"
+        style="top: 8200px"
+        data-label="0 m (Permukaan Laut)"
+      ></div>
+
+      <div
+        class="depth-marker"
+        style="top: 11800px"
+        data-label="−200 m (Terumbu Karang)"
+      ></div>
+
+      <div
+        class="depth-marker"
+        style="top: 15600px"
+        data-label="−1.000 m (Zona Twilight)"
+      ></div>
+
+      <div
+        class="depth-marker"
+        style="top: 19400px"
+        data-label="−3.800 m (Titanic)"
+      ></div>
+
+      <div
+        class="depth-marker"
+        style="top: 22200px"
+        data-label="−6.000 m (Zona Abyss)"
+      ></div>
+
+      <div
+        class="depth-marker"
+        style="top: 24600px"
+        data-label="−10.994 m (Challenger Deep)"
+      ></div>
+
+      <!-- INTRO -->
+
+      <div class="big-label" style="top: 400px">
+        DARI LANGIT HINGGA DASAR SAMUDRA
+        <span>
+          Scroll pelan untuk menyusuri burung, pegunungan, hingga laut terdalam
+        </span>
+      </div>
+
+      <!-- ====================== BAGIAN LANGIT / ATMOSFER ====================== -->
+
+      <div class="zone-label" style="top: 1200px">LANGIT & TROPOSFER</div>
+
+      <!-- Pesawat komersial -->
+
+      <div class="story-block" style="top: 1800px">
+        <div class="card">
+          <span class="icon">✈️</span>
+          <h2>Pesawat Komersial</h2>
+          <div class="meta">≈ 10.000–12.000 m di atas permukaan laut</div>
+          <p>
+            Pesawat penumpang seperti Boeing dan Airbus biasanya terbang di
+            ketinggian 9–12 km. Di sini udara sangat tipis dan suhu luar bisa
+            mencapai −50°C, tapi turbulensi lebih stabil sehingga penerbangan
+            terasa lebih halus. Di ketinggian ini, burung sudah tidak ada —
+            hanya mesin dan logam yang berani terbang.
+          </p>
+        </div>
+      </div>
+
+      <!-- Elang & burung pegunungan -->
+
+      <div class="story-block" style="top: 2600px">
+        <div class="card">
+          <span class="icon">🦅</span>
+          <h2>Elang & Burung Pegunungan</h2>
+          <div class="meta">≈ 3.000–4.000 m</div>
+          <p>
+            Beberapa elang dan burung migran mampu terbang di atas puncak
+            pegunungan tinggi. Elang emas 🦅 dan elang botak sering memanfaatkan
+            arus udara naik (thermal) untuk melayang lama tanpa mengepak sayap.
+            Angsa liar 🦢 bahkan tercatat melintas Himalaya saat migrasi, lewat
+            di atas pegunungan yang sama dengan jalur pesawat.
+          </p>
+        </div>
+      </div>
+
+      <!-- Burung & Awan -->
+
+      <div class="story-block" style="top: 3400px">
+        <div class="card">
+          <span class="icon">🐦</span>
+          <h2>Burung & Awan Harian</h2>
+          <div class="meta">0–2.000 m di atas permukaan laut</div>
+          <p>
+            Di lapisan bawah troposfer, burung-burung dan pesawat kecil berbagi
+            langit. Merpati kota 🕊️, burung gereja 🐦, gagak 🐦‍⬛,
+            layang-layang, dan camar laut 🐦 terbang di sekitar bangunan,
+            pantai, dan ladang. Di sini juga terbentuk awan hujan, badai petir,
+            pelangi, dan awan kumulus tebal yang sering kita lihat setiap hari.
+          </p>
+        </div>
+      </div>
+
+      <!-- Ragam burung -->
+
+      <div class="story-block" style="top: 4200px">
+        <div class="card">
+          <span class="icon">🕊️</span>
+          <h2>Ragam Burung di Langit Rendah</h2>
+          <div class="meta">Sekitar ratusan meter hingga ±1.000 m</div>
+          <p>
+            Di dekat permukaan, burung hidup sangat beragam: burung kolibri mini
+            🐦‍🔥 menghisap nektar bunga, burung bangau tinggi 🕊️ menunggu ikan
+            di tepi sungai, flamingo 🦩 berdiri berkelompok di danau asin, dan
+            burung nuri 🦜 meramaikan hutan dengan warna mencolok dan suara
+            nyaring. Semuanya bergantung pada pola angin, suhu, dan ketersediaan
+            makanan yang dibentuk oleh atmosfer.
+          </p>
+        </div>
+      </div>
+
+      <!-- ====================== BAGIAN PEGUNUNGAN / DARAT ====================== -->
+
+      <div class="zone-label" style="top: 5000px">PEGUNUNGAN & DARAT</div>
+
+      <!-- Gunung Everest -->
+
+      <div class="story-block" style="top: 5600px">
+        <div class="card">
+          <span class="icon">🏔️</span>
+          <h2>Gunung Everest</h2>
+          <div class="meta">
+            8.848 m — Puncak tertinggi di atas permukaan laut
+          </div>
+          <p>
+            Di “atap dunia” ini, kadar oksigen hanya sekitar sepertiga dari di
+            permukaan. Suhu bisa turun jauh di bawah nol, dan angin kencang
+            membentuk zona “death zone” bagi manusia. Hampir tidak ada hewan
+            yang bisa tinggal permanen di sini; hanya beberapa burung dan
+            serangga tertentu yang kadang melintas.
+          </p>
+        </div>
+      </div>
+
+      <!-- Yak & Snow Leopard -->
+
+      <div class="story-block" style="top: 6400px">
+        <div class="card">
+          <span class="icon">🐂</span>
+          <h2>Yak & Macan Tutul Salju</h2>
+          <div class="meta">≈ 4.000–5.000 m</div>
+          <p>
+            Yak Himalaya 🐂 punya paru-paru dan jantung besar untuk menghadapi
+            oksigen tipis. Mereka jadi hewan beban, sumber susu, dan daging bagi
+            masyarakat pegunungan. Macan tutul salju 🐆 menyelinap di tebing
+            bebatuan terjal, nyaris tak terlihat berkat bulu bercorak abu-abu.
+            Ekor mereka yang panjang dan tebal dipakai sebagai “selimut” saat
+            tidur di salju.
+          </p>
+        </div>
+      </div>
+      <!-- Zona alpine & garis pohon atas -->
+
+      <div class="story-block" style="top: 7200px">
+        <div class="card">
+          <span class="icon">🌲</span>
+          <h2>Zona Alpine & Garis Pohon</h2>
+          <div class="meta">≈ 3.000 m</div>
+          <p>
+            Di atas ketinggian ini, pohon sulit bertahan. Vegetasi berubah jadi
+            semak dan rumput pendek yang tahan angin kencang dan suhu rendah.
+            Kambing gunung 🐐 dan domba gunung sering terlihat di tebing terjal,
+            sementara marmut dan pika bersembunyi di lubang-lubang batu untuk
+            menghindari predator dan hawa dingin.
+          </p>
+        </div>
+      </div>
+
+      <!-- Dataran hutan dan savana: banyak hewan darat -->
+
+      <div class="story-block" style="top: 8000px">
+        <div class="card">
+          <span class="icon">🌳</span>
+          <h2>Hutan & Savana: Rumah Para Raksasa</h2>
+          <div class="meta">0–1.000 m</div>
+          <p>
+            Di dataran rendah, benua dipenuhi keanekaragaman hayati darat. Gajah
+            🐘 merobohkan pohon untuk membuka jalan, jerapah 🦒 merumput di
+            pucuk daun, zebra 🦓 berlari berkelompok, dan badak 🦏 menjaga
+            wilayahnya. Singa 🦁, harimau 🐯, cheetah 🐆, dan hyena 🐕‍🦺 mengintai
+            mangsa yang lemah atau terpisah dari kawanan. Di padang rumput lain,
+            bison 🐃, kerbau, dan kuda liar 🐎 mendominasi lanskap.
+          </p>
+        </div>
+      </div>
+
+      <!-- Hutan tropis: primata & lain-lain -->
+
+      <div class="story-block" style="top: 8800px">
+        <div class="card">
+          <span class="icon">🐒</span>
+          <h2>Hutan Tropis</h2>
+          <div class="meta">Dekat permukaan laut</div>
+          <p>
+            Di kanopi hutan hujan, monyet 🐒, gorila 🦍, dan orangutan berayun
+            di antara cabang pohon. Harimau belang 🐯 dan macan tutul
+            bersembunyi di bawah bayang-bayang, sementara tapir, babi hutan 🐗,
+            dan rusa kecil mondar-mandir di lantai hutan. Burung nuri
+            warna-warni 🦜, burung rangkong, dan katak beracun kecil 🐸 menambah
+            warna dan suara di ekosistem yang sangat padat kehidupan ini.
+          </p>
+        </div>
+      </div>
+
+      <!-- Garis pantai -->
+
+      <div class="zone-label" style="top: 9600px">PERMUKAAN LAUT</div>
+
+      <div class="story-block" style="top: 10200px">
+        <div class="card">
+          <span class="icon">🏖️</span>
+          <h2>Garis Pantai & Permukaan Laut</h2>
+          <div class="meta">0 m — Titik nol ketinggian</div>
+          <p>
+            Di sinilah darat berakhir dan samudra dimulai. Permukaan laut
+            digunakan sebagai acuan “0 m” untuk mengukur ketinggian gunung dan
+            kedalaman laut. Pantai menjadi pertemuan kepiting 🦀, burung pantai,
+            dan manusia yang bermain di ombak sebelum kita menyelam ke dunia
+            biru yang semakin gelap dan asing.
+          </p>
+        </div>
+      </div>
+
+      <!-- ====================== BAGIAN LAUT DANGKAL ====================== -->
+
+      <div class="zone-label" style="top: 11000px">
+        ZONA PERMUKAAN (EPIPELAGIC)
+      </div>
+
+      <!-- Terumbu & Nemo -->
+
+      <div class="story-block" style="top: 11600px">
+        <div class="card">
+          <span class="icon">🐠</span>
+          <h2>Ikan Badut & Terumbu Karang</h2>
+          <div class="meta">≈ 10–30 m di bawah permukaan</div>
+          <p>
+            Ikan badut 🐠 hidup di antara tentakel anemon laut yang menyengat.
+            Lapisan lendir khusus di tubuhnya melindungi dari racun anemon.
+            Terumbu karang penuh warna juga menjadi rumah bagi ikan kepe-kepe,
+            ikan surgeon, dan ratusan spesies kecil lain yang membentuk “kota
+            bawah laut” yang sangat sibuk.
+          </p>
+        </div>
+      </div>
+
+      <!-- Lumba-lumba & Penyu -->
+
+      <div class="story-block" style="top: 12400px">
+        <div class="card">
+          <span class="icon">🐬</span>
+          <h2>Lumba-lumba, Penyu Laut & Pari Manta</h2>
+          <div class="meta">0–200 m</div>
+          <p>
+            Lumba-lumba 🐬 berkomunikasi dengan siulan kompleks dan kadang
+            bekerja sama untuk mengepung kawanan ikan. Penyu hijau 🐢 melakukan
+            migrasi ribuan kilometer antara tempat makan dan pantai bertelur.
+            Pari manta raksasa 🐋‍🦈 melayang seperti “sayap” besar di perairan
+            dangkal, menyaring plankton sambil melakukan gerakan yang terlihat
+            elegan bagi penyelam.
+          </p>
+        </div>
+      </div>
+
+      <!-- Paus & Hiu karang -->
+
+      <div class="story-block" style="top: 13200px">
+        <div class="card">
+          <span class="icon">🐋</span>
+          <h2>Paus Biru, Hiu Paus & Hiu Karang</h2>
+          <div class="meta">0–200 m</div>
+          <p>
+            Paus biru 🐋 adalah hewan terbesar yang pernah hidup di Bumi. Hiu
+            paus 🐋‍🦈, meski sangat besar, justru ramah dan memakan plankton
+            dengan menyaring air laut. Hiu karang 🦈 berpatroli di sekitar
+            terumbu untuk menjaga keseimbangan ekosistem, sementara moray eel
+            bersembunyi di celah batu menunggu mangsa lewat.
+          </p>
+        </div>
+      </div>
+
+      <!-- ====================== MESOPELAGIC (TWILIGHT) ====================== -->
+
+      <div class="zone-label" style="top: 14000px">
+        ZONA TWILIGHT (MESOPELAGIC)
+      </div>
+
+      <div class="story-block" style="top: 14600px">
+        <div class="card">
+          <span class="icon">💡</span>
+          <h2>Cahaya Hampir Habis</h2>
+          <div class="meta">≈ 200–1.000 m</div>
+          <p>
+            Di zona ini, cahaya Matahari memudar. Mata hewan seperti ikan
+            lentera dan ikan naga sangat peka terhadap cahaya lemah. Banyak
+            spesies melakukan “migrasi vertikal” harian: naik mendekati
+            permukaan di malam hari untuk makan, lalu turun lagi ke kedalaman
+            saat siang agar aman dari predator.
+          </p>
+        </div>
+      </div>
+
+      <div class="story-block" style="top: 15400px">
+        <div class="card">
+          <span class="icon">🐟</span>
+          <h2>Ikan Lentera & Makhluk Berlampu</h2>
+          <div class="meta">≈ 400–800 m</div>
+          <p>
+            Ikan lentera, ikan kapak laut, dan banyak spesies kecil lainnya
+            memiliki organ bioluminesen yang menyala biru atau hijau. Ada juga
+            ubur-ubur kecil 🪼 yang memancarkan cahaya halus, serta udang kecil
+            yang bisa menyemburkan cahaya seperti “bom flash” untuk
+            membingungkan predator yang mengejar mereka.
+          </p>
+        </div>
+      </div>
+
+      <!-- ====================== BATHY / MIDNIGHT ====================== -->
+
+      <div class="zone-label" style="top: 16200px">
+        ZONA MIDNIGHT (BATHYPELAGIC)
+      </div>
+
+      <div class="story-block" style="top: 16800px">
+        <div class="card">
+          <span class="icon">🎣</span>
+          <h2>Anglerfish & Cumi-cumi Raksasa</h2>
+          <div class="meta">≈ 1.000–2.000 m</div>
+          <p>
+            Anglerfish betina 🎣 memiliki “joran” bercahaya di depan mulutnya
+            untuk memancing mangsa yang penasaran. Cumi-cumi raksasa 🦑 berburu
+            di kegelapan, meninggalkan bekas luka di kepala paus sperma 🐋 yang
+            mencoba memakannya. Banyak spesies di sini memiliki gigi panjang
+            seperti jarum dan mulut yang bisa terbuka lebar untuk menelan mangsa
+            yang berukuran hampir sama dengan tubuhnya.
+          </p>
+        </div>
+      </div>
+
+      <div class="story-block" style="top: 17600px">
+        <div class="card">
+          <span class="icon">🦑</span>
+          <h2>Paus Sperma & Perburuan Dalam</h2>
+          <div class="meta">Hingga >2.000 m</div>
+          <p>
+            Paus sperma adalah salah satu penyelam terdalam di antara mamalia.
+            Mereka menahan napas selama lebih dari satu jam untuk mengejar
+            cumi-cumi raksasa jauh di kedalaman. Tubuh mereka beradaptasi dengan
+            paru-paru yang bisa mengempis dan tulang yang lebih lentur, sehingga
+            tidak hancur oleh tekanan air laut yang besar.
+          </p>
+        </div>
+      </div>
+
+      <!-- ====================== ABYSSAL ====================== -->
+
+      <div class="zone-label" style="top: 18400px">ZONA ABYSSAL</div>
+
+      <div class="story-block" style="top: 19000px">
+        <div class="card">
+          <span class="icon">❄️</span>
+          <h2>Dingin, Gelap, dan Bertekanan Tinggi</h2>
+          <div class="meta">≈ 3.000–4.000 m</div>
+          <p>
+            Suhu di zona abyssal hanya sekitar 2–3°C, sedikit di atas titik
+            beku. Tekanan bisa mencapai ratusan kali tekanan udara di permukaan.
+            Namun, makhluk seperti tripod fish, sea cucumber besar, dan
+            jellyfish raksasa 🪼 masih bertahan. Banyak hewan di sini bergerak
+            pelan dan menghemat energi karena makanan sangat langka.
+          </p>
+        </div>
+      </div>
+
+      <!-- Titanic -->
+
+      <div class="story-block" style="top: 19800px">
+        <div class="card">
+          <span class="icon">🚢</span>
+          <h2>Rongsokan RMS Titanic</h2>
+          <div class="meta">≈ −3.800 m</div>
+          <p>
+            Titanic tenggelam pada tahun 1912 dan kini terbaring di dasar laut
+            Atlantik Utara sekitar 3.800 m di bawah permukaan. Bangkai kapal ini
+            baru ditemukan pada 1985. Baja dan kayu lambat-laun dimakan oleh
+            bakteri pemakan logam, sementara kepiting 🦀, ikan abyssal, dan
+            amphipoda kecil memanfaatkan struktur kapal sebagai tempat tinggal
+            baru.
+          </p>
+        </div>
+      </div>
+
+      <div class="story-block" style="top: 20600px">
+        <div class="card">
+          <span class="icon">🦀</span>
+          <h2>Kepiting Laba-laba Jepang & Teman Abyss</h2>
+          <div class="meta">≈ 4.000–5.000 m</div>
+          <p>
+            Kepiting laba-laba Jepang 🦀 memiliki kaki yang dapat merentang
+            lebih dari 3 meter. Bersama isopoda raksasa dan sea pig (babi laut)
+            yang montok, mereka memakan bangkai dan sisa-sisa organik yang jatuh
+            perlahan dari permukaan — hujan “salju laut” yang sangat lambat tapi
+            menjadi sumber energi utama di kedalaman.
+          </p>
+        </div>
+      </div>
+
+      <!-- ====================== HADAL ====================== -->
+
+      <div class="zone-label" style="top: 21400px">ZONA HADAL</div>
+
+      <div class="story-block" style="top: 22000px">
+        <div class="card">
+          <span class="icon">🐟</span>
+          <h2>Hadal Snailfish</h2>
+          <div class="meta">≈ 7.000–8.000 m</div>
+          <p>
+            Snailfish hadal adalah ikan berlendir dengan tubuh lunak yang
+            sebenarnya akan hancur jika dibawa ke permukaan. Struktur sel mereka
+            dirancang khusus agar protein dan membran tetap stabil pada tekanan
+            ekstrem. Tubuh mereka tampak rapuh, tapi justru paling “diadaptasi”
+            untuk lingkungan brutal ini.
+          </p>
+        </div>
+      </div>
+
+      <div class="story-block" style="top: 22800px">
+        <div class="card">
+          <span class="icon">🦐</span>
+          <h2>Amphipoda & Mikro Kehidupan</h2>
+          <div class="meta">≈ 8.000–10.000 m</div>
+          <p>
+            Amphipoda raksasa 🦐 dan mikroorganisme lain hidup di lumpur dasar
+            palung laut. Mereka memecah materi organik yang mencapai titik
+            terdalam, menjadi bagian penting dalam siklus nutrisi global
+            meskipun hidup di tempat yang nyaris tak tersentuh cahaya. Beberapa
+            bakteri di sini bahkan mampu memakan senyawa beracun yang terbawa
+            dari aktivitas manusia di permukaan.
+          </p>
+        </div>
+      </div>
+
+      <!-- Challenger Deep -->
+
+      <div class="story-block" style="top: 23600px">
+        <div class="card">
+          <span class="icon">🏁</span>
+          <h2>Challenger Deep, Palung Mariana</h2>
+          <div class="meta">−10.994 m — Titik terdalam yang diketahui</div>
+          <p>
+            Inilah bagian terdalam samudra yang diketahui manusia. Menariknya,
+            jika Gunung Everest “ditancapkan” di dasar sini, puncaknya masih
+            akan tetap lebih dari 2.000 m di bawah permukaan laut. Sangat
+            sedikit manusia dan wahana yang pernah mencapai titik ini,
+            menjadikannya salah satu wilayah paling misterius di planet ini.
+          </p>
+        </div>
+      </div>
+
+      <!-- Ending -->
+
+      <div class="big-label" style="top: 24600px">
+        AKHIR PERJALANAN
+        <span>
+          Lebih banyak orang telah ke luar angkasa daripada ke titik terdalam
+          samudra.
+        </span>
+      </div>
+    </div>
+
+    <!-- ====================== CHAT WIDGET ====================== -->
+
+    <div id="chatWidget">
+      <div id="chatToggle" onclick="toggleChat()">
+        <svg viewBox="0 0 24 24" width="32" fill="white">
+          <path
+            d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"
+          />
+        </svg>
+      </div>
+      <div id="chatBox">
+        <div class="chat-header">Nature Intuition Assistant</div>
+        <div class="chat-messages" id="chatMessages">
+          <div class="msg bot">
+            <div class="bubble">Halo! Ada yang bisa dibantu hari ini?</div>
+          </div>
+        </div>
+        <div class="chat-input">
+          <input id="pesan" placeholder="Ketik pesan..." autocomplete="off" />
+          <button id="kirimBtn">
+            <svg viewBox="0 0 24 24" width="20" fill="white">
+              <path d="M2 21l21-9-21-9v7l15 2-15 2z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================== SCRIPT: SCENE / ALTITUDE ====================== -->
+
+    <script>
+      const altValueEl = document.getElementById("altValue");
+      const altLabelEl = document.getElementById("altLabel");
+      const allBlocks = document.querySelectorAll(
+        ".story-block, .zone-label, .big-label, .depth-marker"
+      );
+      const bodyEl = document.body;
+
+      const MAX_ALT = 12000; // meter di atas permukaan laut (paling atas)
+      const MAX_DEPTH = 11000; // meter di bawah permukaan laut (paling bawah)
+
+      function formatAlt(alt) {
+        const absAlt = Math.abs(alt);
+
+        if (absAlt >= 1000) {
+          const km = (absAlt / 1000).toFixed(1).replace(".", ",");
+          return km + " km";
+        } else {
+          return absAlt + " m";
+        }
+      }
+
+      function updateBackground(alt) {
+        if (alt >= 2000) {
+          // Langit / pegunungan tinggi
+          bodyEl.style.background =
+            "linear-gradient(to bottom, #f9fbff 0%, #e3f2fd 40%, #bbdefb 100%)";
+        } else if (alt >= 0) {
+          // Dekat darat
+          bodyEl.style.background =
+            "linear-gradient(to bottom, #e6ffe8 0%, #c8f7c5 40%, #4caf50 100%)";
+        } else {
+          // Laut
+          const depth = Math.abs(alt);
+
+          if (depth < 200) {
+            // Laut dangkal cerah
+            bodyEl.style.background =
+              "linear-gradient(to bottom, #b3e5fc 0%, #4fc3f7 50%, #0288d1 100%)";
+          } else if (depth < 1000) {
+            // Twilight
+            bodyEl.style.background =
+              "linear-gradient(to bottom, #01579b 0%, #003c8f 60%, #001e4f 100%)";
+          } else if (depth < 4000) {
+            // Midnight
+            bodyEl.style.background =
+              "linear-gradient(to bottom, #001b3a 0%, #000c21 50%, #000000 100%)";
+          } else {
+            // Abyssal / Hadal
+            bodyEl.style.background =
+              "linear-gradient(to bottom, #000918 0%, #00040a 50%, #000000 100%)";
+          }
+        }
+      }
+
+      function updateScene() {
+        const maxScroll =
+          document.documentElement.scrollHeight - window.innerHeight;
+        const scrollY = window.scrollY;
+        const ratio = maxScroll === 0 ? 0 : scrollY / maxScroll;
+
+        // alt bergerak halus dari +MAX_ALT ke -MAX_DEPTH
+        const alt = Math.round(MAX_ALT - (MAX_ALT + MAX_DEPTH) * ratio);
+
+        altValueEl.textContent = formatAlt(alt);
+        if (alt >= 0) {
+          altLabelEl.textContent = "di atas permukaan laut";
+        } else {
+          altLabelEl.textContent = "di bawah permukaan laut";
+        }
+
+        updateBackground(alt);
+
+        // visibilitas blok berdasarkan posisi di viewport
+        allBlocks.forEach((el) => {
+          const rect = el.getBoundingClientRect();
+          const winH = window.innerHeight;
+          if (rect.top < winH * 0.8 && rect.bottom > winH * 0.2) {
+            el.classList.add("visible");
+          } else {
+            el.classList.remove("visible");
+          }
+        });
+      }
+
+      window.addEventListener("scroll", updateScene);
+      window.addEventListener("load", updateScene);
+    </script>
+
+    <!-- ====================== SCRIPT: CHAT WIDGET N8N ====================== -->
+
+    <script>
+      function toggleChat() {
+        document.getElementById("chatBox").classList.toggle("open");
+      }
+
+      const url = "https://hellokitoy.app.n8n.cloud/webhook/chatbot";
+      const chatBoxEl = document.getElementById("chatMessages");
+      const inputEl = document.getElementById("pesan");
+      const sendBtn = document.getElementById("kirimBtn");
+
+      function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      function tambahPesan(teks, dari) {
+        const msg = document.createElement("div");
+        msg.className = `msg ${dari}`;
+        msg.innerHTML =
+          dari === "user"
+            ? `<div class="bubble">${escapeHtml(teks)}</div>`
+            : `<div class="bubble">${teks}</div>`;
+        chatBoxEl.appendChild(msg);
+        chatBoxEl.scrollTop = chatBoxEl.scrollHeight;
+      }
+
+      function showTyping() {
+        const t = document.createElement("div");
+        t.id = "typing";
+        t.className = "msg bot";
+        t.innerHTML =
+          '<div class="bubble typing"><span></span><span></span><span></span></div>';
+        chatBoxEl.appendChild(t);
+        chatBoxEl.scrollTop = chatBoxEl.scrollHeight;
+      }
+
+      function hideTyping() {
+        const t = document.getElementById("typing");
+        if (t) t.remove();
+      }
+
+      async function kirim() {
+        const teks = inputEl.value.trim();
+        if (!teks) return;
+
+        tambahPesan(teks, "user");
+        inputEl.value = "";
+        sendBtn.disabled = true;
+        showTyping();
+
+        try {
+          const res = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: teks }),
+          });
+
+          hideTyping();
+          const raw = await res.text();
+          let balasan = raw;
+
+          try {
+            const data = JSON.parse(raw);
+            balasan = data.reply || data.response || data.output || raw;
+          } catch (e) {
+            // kalau bukan JSON, pakai raw apa adanya
+          }
+
+          tambahPesan(balasan, "bot");
+        } catch (err) {
+          hideTyping();
+          tambahPesan("Koneksi gagal!", "bot");
+        }
+
+        sendBtn.disabled = false;
+        inputEl.focus();
+      }
+
+      sendBtn.addEventListener("click", kirim);
+      inputEl.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") kirim();
+      });
+    </script>
+  </body>
+</html>
