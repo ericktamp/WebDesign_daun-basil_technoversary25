@@ -23,7 +23,7 @@ laporan sederhana seperti partikel bumi yang sudah dikuasai,
 hewan yang sudah dihafal, dan game edukasi berupa quiz yang berhasil diselesaikan.
 
 
-Cara Instalasi :
+Cara Instalasi : P.S "Lebih direkomendasikan dibuka di laptop"
 Ada 2 Cara :
 - Cukup dengan mengklik link vercel yang disediakan oleh group kami di form
  atau sebagai berikut : https://web-design-daun-basil-technoversary.vercel.app/
