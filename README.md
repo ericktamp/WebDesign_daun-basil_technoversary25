@@ -23,14 +23,19 @@ laporan sederhana seperti partikel bumi yang sudah dikuasai,
 hewan yang sudah dihafal, dan game edukasi berupa quiz yang berhasil diselesaikan.
 
 
-Cara Instalasi : P.S "Lebih direkomendasikan dibuka di laptop"
+Cara Installasi : 
+Coba untuk deploy di 2 Device : Laptop / Handphone (Rekomendasi : Laptop)
+
+
 Ada 2 Cara :
-- Cukup dengan mengklik link vercel yang disediakan oleh group kami di form
+- Cukup dengan mengklik link Vercel yang disediakan oleh group kami di form
  atau sebagai berikut : https://web-design-daun-basil-technoversary.vercel.app/
 
 - Cara ke 2, install semua file di github dalam bentuk ZIP dan extract.
 Karena basis kita hanya HTML, cukup extract, mulai dari index.html 
 dan semua fitur akan berjalan sekhalayaknya.
+
+Saran Kami : Explore semua page yang ada, karena banyak hal menarik.
 
 Jika ada pertanyaan mengenai cara instalasi/run bisa hubungi:
 085708989602
