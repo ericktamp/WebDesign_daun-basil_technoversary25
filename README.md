@@ -9,7 +9,7 @@ Judul Website :
 NatureIntuition (Learning Portal)
 
 Deskrip Website :
-Website edukasi untuk anak Taman Kanak-kanak ini fokus pada pengalaman 
+Website edukasi yang difokuskan untuk level dibawah atau setara Taman Kanak-kanak  ini fokus pada pengalaman 
 belajar yang ringan dan mudah dipahami. 
 Kontennya mengenalkan hewan, partikel bumi, warna, bentuk, 
 serta aktivitas motorik dasar. Semua materi disajikan dalam format visual 
